@@ -2,7 +2,7 @@
   "name": "webgl_practice",
   "version": "1.0.0",
   "description": "webGL practice files",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
