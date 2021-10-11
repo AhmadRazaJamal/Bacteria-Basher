@@ -3,6 +3,6 @@ A WebGL game to learn about 2D graphics
 
 To run:
 
-1. Run "node server.js" in terminal.
+1. Run "node server.js" in the Bacter Basher directory in the terminal.
 2. Open localhost:4000 in the browser. 
 
