@@ -4,13 +4,14 @@ var vertexShaderText = [
 
   'attribute vec2 vertPosition;',
   'attribute vec3 vertColor;',
+  'uniform vec2 translation;',
 
   'varying vec3 fragColor;',
 
   'void main()',
   '{',
   '	fragColor = vertColor;',
-  '	gl_Position = vec4(vertPosition,0.0,1.0);',
+  '	gl_Position = vec4(vertPosition + translation, 0.0, 1.0);',
   '}'
 ].join('\n');
 
@@ -106,21 +107,50 @@ function bacteriaBasher() {
   }
 
   // Draw a cicle using all the points created
-  function drawCircle() {
+
+  var gameDisc = [];
+  var gameDiscColor = [];
+  var bacteriaDiscColor = [];
+  var bacteriaDisc = [];
+  var translation = [0.05, 0.1];
+
+  function drawGameDisc(disc) {
     gl.useProgram(program);
 
-    var rotationradian = [];
     for (var i = 0; i <= 360; i += 1) {
-      rotationradian.push(Math.cos(radian(i)), Math.sin(radian(i)), 0);
+      disc.push(Math.cos(radian(i)), Math.sin(radian(i)), 0);
+      gameDiscColor.push(Math.tanh(radian(i)), Math.sin(radian(i)), Math.cosh(radian(i)));
     }
 
     // Three points constitute one triangle, so choose 3 points to draw per cycle
-    attributeSetFloats(gl, program, "vertPosition", 3, rotationradian);
+    attributeSetFloats(gl, program, "vertPosition", 3, disc);
+    attributeSetFloats(gl, program, "vertColor", 3, gameDiscColor);
     // The length needs to be divided by 3 because we need to draw 120 triangles for 360 points
-    gl.drawArrays(gl.TRIANGLE_FAN, 0, rotationradian.length / 3);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, disc.length / 3);
   }
 
-  drawCircle();
+  function drawBacteriaDiscs(gameDisc, bacteriaDisc) {
+    gl.useProgram(program);
+
+    for (var i = 0; i <= 180; i += 1) {
+      bacteriaDisc.push(Math.cos(radian(i)), Math.sin(radian(i)), 100);
+      bacteriaDiscColor.push(Math.cos(radian(i+45)), Math.cos(radian(i-45)), Math.cosh(radian(i-56)));
+    }
+
+    // Three points constitute one triangle, so choose 3 points to draw per cycle
+    attributeSetFloats(gl, program, "vertPosition", 3, bacteriaDisc);
+    attributeSetFloats(gl, program, "vertColor", 3, bacteriaDiscColor);
+   
+    var translationLocation = gl.getUniformLocation(program, "translation");
+    // Set the translation.
+    gl.uniform2fv(translationLocation, translation);
+
+    // The length needs to be divided by 3 because we need to draw 120 triangles for 360 points
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, bacteriaDisc.length / 3);
+  }
+
+  drawGameDisc(gameDisc);
+  drawBacteriaDiscs(gameDisc, bacteriaDisc)
 }
 
 window.onload = bacteriaBasher;
