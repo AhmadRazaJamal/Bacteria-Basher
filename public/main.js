@@ -1,3 +1,4 @@
+// Write the vertex shader and fragment shader functions
 var vertexShaderText = [
   'precision mediump float;',
 
@@ -49,6 +50,8 @@ function bacteriaBasher() {
 
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
+
+  // Centered the circle at the center of the canvas
   gl.viewport(canvas.width/4, canvas.height/4, canvas.width/2, canvas.height/2);
 
   /*  
@@ -86,11 +89,13 @@ function bacteriaBasher() {
   Create a circle buffer
   */
 
+  // Converts degrees to radians
   function radian(degree) {
     var rad = degree * (Math.PI / 180);
     return rad;
   }
 
+  // Create and bind Buffer, load buffer data and link vertex attributes with buffer 
   function attributeSetFloats(gl, prog, attr_name, rsize, arr) {
     gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(arr),
@@ -100,20 +105,19 @@ function bacteriaBasher() {
     gl.vertexAttribPointer(attr, rsize, gl.FLOAT, false, 0, 0);
   }
 
+  // Draw a cicle using all the points created
   function drawCircle() {
     gl.useProgram(program);
 
-    var arrayradian = [];
     var rotationradian = [];
- 
     for (var i = 0; i <= 360; i += 1) {
-      arrayradian.push(radian(i));
       rotationradian.push(Math.cos(radian(i)), Math.sin(radian(i)), 0);
     }
 
+    // Three points constitute one triangle, so choose 3 points to draw per cycle
     attributeSetFloats(gl, program, "vertPosition", 3, rotationradian);
+    // The length needs to be divided by 3 because we need to draw 120 triangles for 360 points
     gl.drawArrays(gl.TRIANGLE_FAN, 0, rotationradian.length / 3);
-    //10 the THIRD parameter number of POINT/TWO POINT = VECTOR
   }
 
   drawCircle();
