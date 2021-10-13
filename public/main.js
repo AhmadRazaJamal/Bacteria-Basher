@@ -54,11 +54,11 @@ function bacteriaBasher() {
   // Clear the color buffer with specified clear color
   gl.clear(gl.COLOR_BUFFER_BIT);
 
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth/1.5;
+  canvas.height = window.innerHeight/1.5;
 
   // Centered the circle at the center of the canvas
-  gl.viewport(0, 0, canvas.width, canvas.height);
+  gl.viewport(canvas.width/3.5, canvas.height/4, canvas.width/2.6, canvas.height/1.5);
 
   /*  
   Create, Compile and link Shaders 
@@ -123,14 +123,26 @@ function bacteriaBasher() {
     [0.8, 0.4, 1]
   ];
   var bacteriaDiscColor = [];
-  
-  var translation = [1, 4.8];
+  var bacteriaSpawnLocations = [
+    [1, 4.8, 0.2, 1],
+    [-1, -4.8, -0.2, -1],
+    [-4, -2.8, -0.7, -0.5],
+    [-4, -2.8, -0.7, -0.5],
+    [4.6, -1.5, 1, -0.3],
+    [-4.6, -1.5, -1, -0.3],
+    [0, -4.8, 0, -1],
+    [0, -4.8, 0, -1],
+    [4, 2.8, .9, .6],
+    [-4, -2.8, -.9, -.6]
+]
+
+  var translation = [-4, -2.8];
   var rotation = [0, 1];
 
   function drawGameDisc(disc) {
     gl.useProgram(program);
 
-    for (var i = 0; i <= 360; i += 1) {
+    for (var i = 0; i <= 360; i += 0.1) {
       disc.push(Math.cos(radian(i)), Math.sin(radian(i)), 0);
       gameDiscColor.push(Math.tanh(radian(i)), Math.sin(radian(i)), Math.cosh(radian(i)));
     }
@@ -152,14 +164,14 @@ function bacteriaBasher() {
     gl.drawArrays(gl.TRIANGLE_FAN, 0, disc.length / 3);
   }
 
-  function drawBacteriaDiscs(gameDisc, bacteriaDisc) {
+  function drawBacteriaDiscs(bacteriaDisc) {
     gl.useProgram(program);
 
     // Choose random color out of red, green or blue
     var bacteriaRandomColor = Math.floor((Math.random() * 2) + 0)
 
-    for (var i = 0; i <= 180; i += 1) {
-      bacteriaDisc.push(Math.cos(radian(i)), Math.sin(radian(i)), 0);
+    for (var i = 0; i <= 180; i += 0.1) {
+      bacteriaDisc.push(Math.cos(radian(i))*0.6, Math.sin(radian(i))*0.6, 0);
       bacteriaDiscColor.push(
         Math.sin(radian(i)),
         bacteriaDiscColorOptions[bacteriaRandomColor][0],
@@ -177,11 +189,13 @@ function bacteriaBasher() {
     gl.uniform2fv(scalingAttributeLocation, scaling);
 
     // Translate the semi circle such that its on the circumference
+    var spawnLocation = Math.floor((Math.random() * 9) + 0);
+    translation = [bacteriaSpawnLocations[spawnLocation][0], bacteriaSpawnLocations[spawnLocation][1]];
     var translationLocation = gl.getUniformLocation(program, "translation");
     gl.uniform2fv(translationLocation, translation);
 
     // Sets the rotation for bacteria discs
-    var rotation = [0.2, 1];
+    var rotation = [bacteriaSpawnLocations[spawnLocation][2], bacteriaSpawnLocations[spawnLocation][3]];
     var rotationLocation = gl.getUniformLocation(program, "rotation");
     gl.uniform2fv(rotationLocation, rotation);
 
@@ -190,7 +204,7 @@ function bacteriaBasher() {
   }
 
   drawGameDisc(gameDisc);
-  drawBacteriaDiscs(gameDisc, bacteriaDisc)
+  drawBacteriaDiscs(bacteriaDisc)
 }
 
 window.onload = bacteriaBasher;
