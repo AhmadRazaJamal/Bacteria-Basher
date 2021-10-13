@@ -272,6 +272,32 @@ function bacteriaBasher() {
         }
     }
 
+    function kaboom() {
+        function createExplosion(bacteria) {
+            bacteria.x = x;
+            bacteria.y = y;
+            bacteria.r = r; //radius
+            //convert color to 255 not 1, and of opacity 1
+            bacteria.color = "rgba(" + Math.round((color[0]) * 255)+ "," + Math.round((color[1]) * 255) + "," + Math.round((color[2]) * 255) + "," + 1 + ")";
+            //speed??
+            var life = 20 + Math.random() * 5;
+        }
+
+        var pCanvas = (document.getElementById('particles').getContext('2d'));
+        function draw () {
+            if(life > 0) {
+                pCanvas.beginPath();
+                pCanvas.arc(bacteria.x, bacteria.y, bacteria.r, 0, Math,PI*2);
+                pCanvas.fillStyle = color;
+                pCanvas.fill();
+                life--;
+                x -= 0.2;
+                y -= 0.2;
+                r -= 0.5;
+            }
+        }
+    }
+
 
 
 
