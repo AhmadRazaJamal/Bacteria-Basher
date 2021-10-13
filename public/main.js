@@ -207,20 +207,75 @@ function bacteriaBasher() {
         gl.drawArrays(gl.TRIANGLE_FAN, 0, bacteriaDisc.length / 3);
     }
 
-    canvas.onmousedown = function(ev) {
-        var mx = ev.clientX;
-        var my = ev.clientY;
-        mx = mx / canvas.width - 0.5;
-        my = my / canvas.height - 0.5;
-        mx = mx * 2;
-        my = my * -2;
-        console.log(mx + ' ' + my);
-        x = mx;
-        y = my;
+    // Three points constitute one triangle, so choose 3 points to draw per cycle
+    attributeSetFloats(gl, program, "vertPosition", 3, disc);
+    attributeSetFloats(gl, program, "vertColor", 3, gameDiscColor);
+
+    // Sets the rotation for the main disc
+    var rotationLocation = gl.getUniformLocation(program, "rotation");
+    gl.uniform2fv(rotationLocation, rotation);
+
+    // Scale the circle to be half the canvas width and height
+    var scaling = [0.5, 0.5];
+    var scalingAttributeLocation = gl.getUniformLocation(program, 'scaling');
+    gl.uniform2fv(scalingAttributeLocation, scaling);
+
+    // The length needs to be divided by 3 because we need to draw 120 triangles for 360 points
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, disc.length / 3);
+}
+
+var bacteriaGrowthFactor = 0.6; //determines the size of the bacteria
+function drawBacteriaDiscs(bacteriaDisc) {
+    gl.useProgram(program);
+
+    // Choose random color out of red, green or blue
+    var bacteriaRandomColor = Math.floor((Math.random() * 2) + 0)
+
+    for (var i = 0; i <= 180; i += 0.1) {
+        bacteriaDisc.push(Math.cos(radian(i)) * bacteriaGrowthFactor, Math.sin(radian(i)) * bacteriaGrowthFactor, 0);
+        bacteriaDiscColor.push(
+            Math.sin(radian(i)),
+            bacteriaDiscColorOptions[bacteriaRandomColor][0],
+            bacteriaDiscColorOptions[bacteriaRandomColor][2]
+        );
     }
 
-    drawGameDisc(gameDisc);
-    drawBacteriaDiscs(bacteriaDisc)
+    // Three points constitute one triangle, so choose 3 points to draw per cycle
+    attributeSetFloats(gl, program, "vertPosition", 3, bacteriaDisc);
+    attributeSetFloats(gl, program, "vertColor", 3, bacteriaDiscColor);
+
+    // Scale the semi circle to be much smaller length than that of the larger game disc
+    var scaling = [0.1, 0.1];
+    var scalingAttributeLocation = gl.getUniformLocation(program, 'scaling');
+    gl.uniform2fv(scalingAttributeLocation, scaling);
+
+    // Translate the semi circle such that its on the circumference
+    var spawnLocation = Math.floor((Math.random() * 9) + 0);
+    translation = [bacteriaSpawnLocations[spawnLocation][0], bacteriaSpawnLocations[spawnLocation][1]];
+    var translationLocation = gl.getUniformLocation(program, "translation");
+    gl.uniform2fv(translationLocation, translation);
+
+    // Sets the rotation for bacteria discs
+    var rotation = [bacteriaSpawnLocations[spawnLocation][2], bacteriaSpawnLocations[spawnLocation][3]];
+    var rotationLocation = gl.getUniformLocation(program, "rotation");
+    gl.uniform2fv(rotationLocation, rotation);
+
+    // The length needs to be divided by 3 because we need to draw 120 triangles for 360 points
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, bacteriaDisc.length / 3);
 }
+
+drawGameDisc(gameDisc);
+drawBacteriaDiscs(bacteriaDisc);
+
+
+/********************/
+/* Main render loop */
+/********************/
+var loop = function() {
+    bacteriaGrowthFactor += 0.1;
+    gl.uniform2fv(bacteriaGrowthFactor, scaling);
+    requestAnimationFrame(loop);
+};
+requestAnimationFrame(loop);
 
 window.onload = bacteriaBasher;
