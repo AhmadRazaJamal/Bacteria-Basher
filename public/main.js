@@ -166,6 +166,7 @@ function bacteriaBasher() {
     gl.drawArrays(gl.TRIANGLE_FAN, 0, disc.length / 3);
   }
 
+  var bacteriaGrowthFactor = 0.6;	//determines the size of the bacteria
   function drawBacteriaDiscs(bacteriaDisc) {
     gl.useProgram(program);
 
@@ -173,7 +174,7 @@ function bacteriaBasher() {
     var bacteriaRandomColor = Math.floor((Math.random() * 2) + 0)
 
     for (var i = 0; i <= 180; i += 0.1) {
-      bacteriaDisc.push(Math.cos(radian(i))*0.6, Math.sin(radian(i))*0.6, 0);
+      bacteriaDisc.push(Math.cos(radian(i))*bacteriaGrowthFactor, Math.sin(radian(i))*bacteriaGrowthFactor, 0);
       bacteriaDiscColor.push(
         Math.sin(radian(i)),
         bacteriaDiscColorOptions[bacteriaRandomColor][0],
@@ -206,7 +207,19 @@ function bacteriaBasher() {
   }
 
   drawGameDisc(gameDisc);
-  drawBacteriaDiscs(bacteriaDisc)
+  drawBacteriaDiscs(bacteriaDisc);
+
+
+  /********************/
+  /* Main render loop */
+  /********************/
+  var loop = function() {
+	bacteriaGrowthFactor += 0.1;
+	gl.uniform2fv(bacteriaGrowthFactor, scaling);
+	requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
+
 }
 
 window.onload = bacteriaBasher;
