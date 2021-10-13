@@ -15,14 +15,40 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
-    <script src="main.js" defer></script>
+    <script src="main2.js" defer></script>
 </head>
 <body style="background: linear-gradient(90deg, #efd5ff 0%, #515ada 100%);">
     <div style="margin-left:10px; font-family: 'Poppins', sans-serif;">
         <h1>Bacteria Basher</h1>
         <p>Bacteria Reaching Threshold:</p>
         <p>Bacteria Poisoned:</p>
-        <p>Time Remaining:</p>
+        <p style="display: inline">Time Remaining: <p id="time_remaining" style="display: inline"></p></p>
+            <script>
+                // Set the date we're counting down to
+                var countDownDate = new Date("Jan 5, 2022 15:15:60").getTime();
+
+                // Update the count down every 1 second
+                var x = setInterval(function() {
+
+                // Get today's date and time
+                var now = new Date().getTime();
+
+                // Find the distance between now and the count down date
+                var distance = countDownDate - now;
+
+                // Time calculations for days, hours, minutes and seconds
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Display the result in the element with id="demo"
+                document.getElementById("time_remaining").innerHTML = minutes + "m " + seconds + "s ";
+
+                // If the count down is finished, write some text
+                if (distance < 0) {
+                    clearInterval(x);
+                    document.getElementById("time_remaining").innerHTML = "Time is up!";
+                }}, 1000);
+        </script>
     </div>
     <canvas style="margin-left:15%" id="webgl"></canvas>
 </body>
