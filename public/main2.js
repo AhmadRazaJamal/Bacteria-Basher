@@ -24,6 +24,7 @@ function bacteriaBasher() {
     */
 
     const canvas = document.querySelector("#webgl");
+    const particleCanvas = document.querySelector("#particleCanvas");
     // Initialize the GL context
     const gl = canvas.getContext("webgl");
 
@@ -40,9 +41,12 @@ function bacteriaBasher() {
 
     canvas.width = window.innerWidth / 1.5;
     canvas.height = window.innerHeight / 1.5;
+    particleCanvas.width = window.innerWidth / 1.5;
+    particleCanvas.height = window.innerHeight / 1.5;
 
     // Centered the circle at the center of the canvas
     gl.viewport(0, 0, canvas.width / 1.7, canvas.height);
+    gl.viewport(0, 0, particleCanvas.width / 1.7, canvas.height);
 
     /*  
     Create, Compile and link Shaders 
@@ -283,7 +287,7 @@ function bacteriaBasher() {
             var life = 20 + Math.random() * 5;
         }
 
-        var pCanvas = (document.getElementById('particles').getContext('2d'));
+        var pCanvas = (document.getElementById('particleCanvas').getContext('2d'));
         function draw () {
             if(life > 0) {
                 pCanvas.beginPath();
