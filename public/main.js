@@ -123,6 +123,8 @@ function bacteriaBasher() {
     [0.8, 0.4, 1]
   ];
   var bacteriaDiscColor = [];
+
+  //translation in the x&y axis, rotation in the x&y axis
   var bacteriaSpawnLocations = [
     [1, 4.8, 0.2, 1],
     [-1, -4.8, -0.2, -1],
@@ -136,7 +138,7 @@ function bacteriaBasher() {
     [-4, -2.8, -.9, -.6]
 ]
 
-  var translation = [-4, -2.8];
+  var translation = [0, 0];
   var rotation = [0, 1];
 
   function drawGameDisc(disc) {
