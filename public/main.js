@@ -58,7 +58,7 @@ function bacteriaBasher() {
   canvas.height = window.innerHeight/1.5;
 
   // Centered the circle at the center of the canvas
-  gl.viewport(canvas.width/3.5, canvas.height/4, canvas.width/2.6, canvas.height/1.5);
+  gl.viewport(canvas.width/3.2, canvas.height/4, canvas.width/2.6, canvas.height/1.5);
 
   /*  
   Create, Compile and link Shaders 
