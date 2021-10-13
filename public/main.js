@@ -63,7 +63,6 @@ function bacteriaBasher() {
   /*  
   Create, Compile and link Shaders 
   */
-
   var vertexShader = gl.createShader(gl.VERTEX_SHADER);
   var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 
@@ -91,10 +90,12 @@ function bacteriaBasher() {
     return;
   }
 
-  /*  
-  Create a circle buffer
-  */
 
+/*****************************/
+/*          DRAWING         */
+/***************************/
+
+  /*  Create a circle buffer  */
   // Converts degrees to radians
   function radian(degree) {
     var rad = degree * (Math.PI / 180);
@@ -111,8 +112,7 @@ function bacteriaBasher() {
     gl.vertexAttribPointer(attr, rsize, gl.FLOAT, false, 0, 0);
   }
 
-  // Draw a cicle using all the points created
-
+  // Draw a circle using all the points created
   var gameDisc = [];
   var bacteriaDisc = [];
 
