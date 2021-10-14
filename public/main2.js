@@ -97,6 +97,9 @@ function bacteriaBasher() {
     var bacteriaArray = [];
     var remainingBacteria = 25;
     var bacteriaSpawned = 0;
+    var playerLives = 0;
+    var totalBacteria = 15;
+    var bacteriaId = 0;
 
     // Function to draw a circle
     function drawCircle(x, y, radius, color) {
@@ -168,114 +171,156 @@ function bacteriaBasher() {
                 createExplosionAtBacteria(bacArr[i]);
 
                 score += 1;
-                bacArray[i].destroy(i);
+                destroy(i);
                 hit = true;
                 break;
             }
         }
     }
 
-    function spawnBacteria() {
-
-        // get new random data for determining x and y
-        getNewRandomTrigData();
-
-        // get new x and y values along the game circle
-        getCircPoints();
-
-        // Variable to ensure no infinite loop is created
-        var attempt = 0;
-
-        // Loop through all Bacteria to ensure no collision on spawn
-        for (var i = 0; i < bacteriaArray.length; i++) {
-            // Error check to not break the game if the bacteria cover the whole game surface.
-            if (attempt > 500) {
-                console.log("No area for new bacteria to spawn");
-                break;
-            }
-
-            // If theres a collision with a specific object, the variables need to be randomized again
-            // Also need to set i = -1 to ensure it loops through all bacteria again
-            if (colliding(this.x, this.y, 0.06, bacArr[i].x, bacArr[i].y, bacArr[i].r)) {
-                getNewRandomTrigData();
-                getCircPoints();
-                attempt++;
-                i = -1;
-            }
-        }
-
-        // Store new data for each Bacteria
-        r = 0.06;
-        // times by 0.65 to ensure the bacteria isn't as light as the canvas
-        color = [Math.random() * (0.65), Math.random() * (0.65), Math.random() * (0.65), 0.75];
-        alive = true;
-        consuming = [];
-        bacteriaSpawned++;
+    // Pythagorean theorem
+    function distance(bacteria_1, bacteria_2) {
+        var distance_x = bacteria_2.x - bacteria_1.x;
+        var distance_y = bacteria_2.y - bacteria_1.y;
+        return Math.sqrt(Math.pow(distance_x, 2) + Math.pow(distance_y, 2));
     }
 
 
-    function updateBacteriaStatus() {
-
-        if (alive) {
-            // If a certain threshold (r=0.3) destroy the bacteria and decrease player's lives
-            if (r > 0.3) {
-                lives--;
-                this.destroy(bacArr.indexOf(this));
+    function increaseBacteriaSize(bacteria) {
+        if (!bacteria.dead) {
+            // If the radius of bacteria is greater than 0.35, decrease player's life and kill the bacteria
+            if (bacteria.r > 0.35) {
+                destroy(bacteriaArray.indexOf(bacteria));
+                playerLives--;
             } else {
                 // Increase the size of each bacteria by 0.0003 each tick
-                this.r += 0.0003;
-                //increase alpha as bacteria grows
-                this.color[3] += 0.0003;
+                bacteria.r += 0.0004;
 
-                /* Collision Check with consuming assigning,
-                     finds which bacteria are colliding and sets the larger one to consume the other */
-                for (i in bacArr) {
-                    //Skip itself
-                    if (this != bacArr[i]) {
-                        //If either 'this' or bacArr[i] are not in each other's 'consuming' array - continue.
-                        if (this.consuming.indexOf(bacArr[i]) == -1 && bacArr[i].consuming.indexOf(this) == -1) {
-                            //If 'this' and bacArr[i] are colliding add it to this bacteria with the larger radius' 'consuming' array
-                            if (colliding(this.x, this.y, this.r, bacArr[i].x, bacArr[i].y, bacArr[i].r)) {
-                                if (this.id < bacArr[i].id) {
-                                    this.consuming.push(bacArr[i]);
-                                }
+                // Checking if the bacteria to updates collides with any of the bacteria in the array
+                for (var i = 0; i <= bacteriaArrary.length; i++) {
+                    // Skip itslef 
+                    if (bacteria == bacteriaArray[i]) { continue; }
+                    // If the bacteria aren't in each other consumption arrays 
+                    if (bacteria.consuming.indexOf(bacteriaArray[i]) == -1 && bacteriaArray[i].consuming.indexOf(bacteria) == -1) {
+                        // If bacteria are touching, add it to the consuming array of this bacteria
+                        if (colliding(bacteria, bacteriaArray[i])) {
+                            if (bacteria.id < bacteriaArray[i].id) {
+                                bacteria.consuming.push(bacteriaArray[i]);
                             }
-                            // Else if bacArr[i] is in this.consuming, have 'this' consume bacArr[i] by moving it inside of 'this' and shrinking it's radius
-                        } else {
-                            for (i in this.consuming) {
-                                // Easier than typing this.consuming[i].* everytime
-                                let consuming = this.consuming[i];
-                                // If the consuming bacteria has fully entered the larger bacteria, destroy the consumed
-                                if (distance(this.x, this.y, consuming.x, consuming.y) <= (this.r - consuming.r) || consuming.r <= 0.0) {
-                                    consuming.destroy(bacArr.indexOf(consuming));
-                                } else {
-                                    // Normalize vector in order to ensure consistent consumption. Specifically to the speed of consumption
-                                    var dVec = normalize(this.x, this.y, consuming.x, consuming.y);
-                                    /* While being consumed, the bacteria will
-                                    move in the direction of the consumer,
-                                    its radius will be shrunk and the consumer's
-                                    will grow */
-                                    consuming.x -= dVec[0] / (1800 * consuming.r);
-                                    consuming.y -= dVec[1] / (1800 * consuming.r);
-                                    consuming.r -= 0.0025;
-                                    this.r += 0.01 * consuming.r;
-                                    //Increase alpha of the bacteria causing it to become darker as it consumes.
-                                    this.color[3] += 0.001;
-                                }
+                        }
+                        // If bacteria already exists in the consuming array, move it towards it and shrink its radius
+                    } else {
+                        for (i in bacteria.consuming) {
+                            let consuming = bacteria.consuming[i];
+                            // If the consuming bacteria has fully entered the larger bacteria, destroy the consumed
+                            if (distance(bacteria, consuming) <= (bacteria.r - consuming.r) || consuming.r <= 0.0) {
+                                destroy(consuming, bacteriaArray.indexOf(consuming));
+                            } else {
+                                // Move the bacteria towards the consumer and decrease it's radius
+                                consuming.x -= 0.001;
+                                consuming.y -= 0.001;
+                                consuming.r -= 0.0020;
+                                bacteria.r += 0.01 * consuming.r;
                             }
                         }
                     }
                 }
             }
-            // Draw
-            draw_circle(this.x, this.y, this.r, this.color);
+            drawCircle(bacteria.x, bacteria.y, bacteria.r, bacteria.color);
         }
     }
 
+    function destory(bacteria, index, bacteriaArray) {
+        bacteria.dead = true;
+        remainingBacteria -= 1;
+        bacteria.x = 0;
+        bacteria.y = 0;
+        bacteria.r = 0;
 
+        for (i in bacteria.consuming) {
+            destroy(bacteria.indexOf(bacteria.consuming[i], consuming[i]));
+        }
 
+        for (i in bacteriaArray) {
+            if (bacteriaArray[i].consuming.indexOf(bacteria) != -1) {
+                bacteriaArray[i].consuming.splice(bacteriaArray[i].consuming.indexOf(bacteria), 1);
+            }
+        }
 
-    drawCircle(0, 0, 0.8, [0.05, 0.1, 0.05, 0.5]);
+        // Set the bacteria consumption array to empty and remove it from the bacteria array
+        bacteria.consuming = [];
+        bacteriaArray = bacteriaArray.splice(index, 1);
+
+        // Create new bacteria
+        if (remainingBacteria >= totalBacteria) {
+            bacteriaArray.push(createBacteria(bacteriaId));
+            createBacteria(bacteriaArray[totalBacteria - 1]);
+        }
+
+        var i = 0;
+        while (i < bacteriaArray.length) {
+            drawCircle(bacteriaArray[i].x, bacteriaArray[i].y, bacteriaArray[i].r, [0.24, 0.12, 0.45, 0.5]);
+            i++;
+        }
+    }
+
+    function calculateBacteriaCoordinates() {
+        var x = Math.random() >= .5 ? 0.6 : -0.6;
+        var y = Math.random() >= .5 ? 0.6 : -0.6;
+        var trig = Math.random() >= .5 ? "sin" : "cos";
+        var angle = Math.random();
+
+        if (trig == "sin") {
+            x = x * Math.sin(angle);
+            y = y * Math.cos(angle);
+        } else {
+            x = x * Math.cos(angle);
+            y = y * Math.sin(angle);
+        }
+        return [x, y];
+    }
+
+    function createBacteria(bacteriaId) {
+        var id = bacteriaId;
+        var consumingBacteriaArray = [];
+
+        var bacteriaCoordinates = calculateBacteriaCoordinates();
+
+        var bacteria = { x: bacteriaCoordinates[0], y: bacteriaCoordinates[1], r: 0.06 }
+
+        var calculatingNewCoordinates = 250;
+        // Loop to check if the new bacteria isn't colliding with any of the present bacteria
+        console.log(bacteriaArray.length)
+        for (var i = 0; i < bacteriaArray.length; i++) {
+            // If no more room is left for bacteria to be created
+            if (calculatingNewCoordinates == 0) {
+                break;
+            }
+
+            if (collidingBacteria(bacteria, bacteriaArray[i])) {
+                calculateBacteriaCoordinates();
+                bacteria = { x: bacteriaCoordinates[0], y: bacteriaCoordinates[1], r: 0.06 }
+                calculatingNewCoordinates--;
+                i = -1;
+            }
+        }
+
+        bacteriaSpawned++;
+        return { id: id, x: bacteria.x, y: bacteria.y, r: bacteria.r, dead: false, consuming: consumingBacteriaArray }
+    }
+
+    var i = 2;
+    while (i > 0) {
+        var createdBacteria = createBacteria(bacteriaSpawned);
+        bacteriaArray.push(createdBacteria)
+        drawCircle(createdBacteria.x, createdBacteria.y, createdBacteria.r, [0.04, 0.2, 0.35, 0.5]);
+        i--;
+    }
+
+    destory(bacteriaArray[1], bacteriaArray.indexOf(bacteriaArray[1]), bacteriaArray)
+
+    // Draw the game circle
+    drawCircle(0, 0, 0.6, [0.05, 0.1, 0.05, 0.5]);
 }
 
 window.onload = bacteriaBasher;
