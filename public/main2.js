@@ -98,7 +98,7 @@ function bacteriaBasher() {
     var remainingBacteria = 25;
     var bacteriaSpawned = 0;
     var playerLives = 0;
-    var totalBacteria = 15;
+    var totalBacteria = 8;
     var bacteriaId = 0;
 
     // Function to draw a circle
@@ -125,30 +125,22 @@ function bacteriaBasher() {
 
     }
 
-    // Checks if two bacteria are colliding with each other
-    function collidingBacteria(circle_1, circle_2) {
-        var distance_sqaure = (circle_1.x - circle_2.x) * (circle_1.x - circle_2.x) + (circle_1.y - circle_2.y) * (circle_1.y - circle_2.y);
-
-        var radius_square = (circle_1.r + circle_2.r) * (circle_1.r + circle_2.r);
-        if (distance_sqaure == radius_square)
-            return true;
-        else if (distance_sqaure > radius_square)
-            return true;
-        else
-            return false;
+    function distance(bacteria_1, bacteria_2) {
+        var distance_x = bacteria_2.x - bacteria_1.x;
+        var distance_y = bacteria_2.y - bacteria_1.y;
+        return Math.sqrt(Math.pow(distance_x, 2) + Math.pow(distance_y, 2));
     }
 
-    // Normalizes the vectors 
-    function normalizeVector(circle_1, circle_2) {
-        var distance_x = circle_2.x - circle_1.x;
-        var distance_y = circle_2.y - circle_1.y;
-        var distance = Math.sqrt(Math.pow(distance_x, 2) + Math.pow(distance_y, 2));
-
-        return [(circle_2.x - circle_1.x) / distance, (circle_2.y - circle_1.y) / distance];
+    // Checks if two bacteria are colliding with each other
+    function collidingBacteria(bacteria1, bacteria2) {
+        if (distance(bacteria1, bacteria2) - (bacteria1.r + bacteria2.r) < 0) {
+            return true;
+        }
+        return false;
     }
 
     // Checks if a bacteria is clicked on
-    canvas.onmousedown = function click(e, canvas) {
+    canvas.onmousedown = function click(e) {
         var mx = e.clientX,
             my = e.clientY;
 
@@ -178,32 +170,54 @@ function bacteriaBasher() {
         }
     }
 
-    // Pythagorean theorem
-    function distance(bacteria_1, bacteria_2) {
-        var distance_x = bacteria_2.x - bacteria_1.x;
-        var distance_y = bacteria_2.y - bacteria_1.y;
-        return Math.sqrt(Math.pow(distance_x, 2) + Math.pow(distance_y, 2));
-    }
+    function destroy(bacteria, index) {
+        bacteria.dead = true;
+        remainingBacteria -= 1;
+        bacteria.x = 0;
+        bacteria.y = 0;
+        bacteria.r = 0;
 
+        for (i in bacteria.consuming) {
+            destroy(bacteria.consuming[i], bacteriaArray.indexOf(bacteria.consuming[i]));
+        }
+
+        for (i in bacteriaArray) {
+            if (bacteriaArray[i].consuming.indexOf(bacteria) != -1) {
+                bacteriaArray[i].consuming.splice(bacteriaArray[i].consuming.indexOf(bacteria), 1);
+            }
+        }
+
+        // Set the bacteria consumption array to empty and remove it from the bacteria array
+        bacteria.consuming = [];
+        bacteriaArray.splice(index, 1);
+
+        // Create new bacteria if we have room for more
+        if (remainingBacteria >= totalBacteria) {
+            bacteriaArray.push(createBacteria(bacteriaId));
+            createBacteria(bacteriaArray[totalBacteria - 1]);
+        }
+    }
 
     function increaseBacteriaSize(bacteria) {
         if (!bacteria.dead) {
             // If the radius of bacteria is greater than 0.35, decrease player's life and kill the bacteria
             if (bacteria.r > 0.35) {
-                destroy(bacteriaArray.indexOf(bacteria));
+                destroy(bacteria, bacteriaArray.indexOf(bacteria));
                 playerLives--;
             } else {
                 // Increase the size of each bacteria by 0.0003 each tick
                 bacteria.r += 0.0004;
 
                 // Checking if the bacteria to updates collides with any of the bacteria in the array
-                for (var i = 0; i <= bacteriaArrary.length; i++) {
+                for (var i = 0; i < bacteriaArray.length; i++) {
                     // Skip itslef 
-                    if (bacteria == bacteriaArray[i]) { continue; }
+                    if (bacteria == bacteriaArray[i]) {
+                        continue;
+                    }
                     // If the bacteria aren't in each other consumption arrays 
                     if (bacteria.consuming.indexOf(bacteriaArray[i]) == -1 && bacteriaArray[i].consuming.indexOf(bacteria) == -1) {
                         // If bacteria are touching, add it to the consuming array of this bacteria
-                        if (colliding(bacteria, bacteriaArray[i])) {
+                        if (collidingBacteria(bacteria, bacteriaArray[i])) {
                             if (bacteria.id < bacteriaArray[i].id) {
                                 bacteria.consuming.push(bacteriaArray[i]);
                             }
@@ -211,7 +225,7 @@ function bacteriaBasher() {
                         // If bacteria already exists in the consuming array, move it towards it and shrink its radius
                     } else {
                         for (i in bacteria.consuming) {
-                            let consuming = bacteria.consuming[i];
+                            var consuming = bacteria.consuming[i];
                             // If the consuming bacteria has fully entered the larger bacteria, destroy the consumed
                             if (distance(bacteria, consuming) <= (bacteria.r - consuming.r) || consuming.r <= 0.0) {
                                 destroy(consuming, bacteriaArray.indexOf(consuming));
@@ -226,49 +240,17 @@ function bacteriaBasher() {
                     }
                 }
             }
-            drawCircle(bacteria.x, bacteria.y, bacteria.r, bacteria.color);
-        }
-    }
-
-    function destory(bacteria, index, bacteriaArray) {
-        bacteria.dead = true;
-        remainingBacteria -= 1;
-        bacteria.x = 0;
-        bacteria.y = 0;
-        bacteria.r = 0;
-
-        for (i in bacteria.consuming) {
-            destroy(bacteria.indexOf(bacteria.consuming[i], consuming[i]));
-        }
-
-        for (i in bacteriaArray) {
-            if (bacteriaArray[i].consuming.indexOf(bacteria) != -1) {
-                bacteriaArray[i].consuming.splice(bacteriaArray[i].consuming.indexOf(bacteria), 1);
-            }
-        }
-
-        // Set the bacteria consumption array to empty and remove it from the bacteria array
-        bacteria.consuming = [];
-        bacteriaArray = bacteriaArray.splice(index, 1);
-
-        // Create new bacteria
-        if (remainingBacteria >= totalBacteria) {
-            bacteriaArray.push(createBacteria(bacteriaId));
-            createBacteria(bacteriaArray[totalBacteria - 1]);
-        }
-
-        var i = 0;
-        while (i < bacteriaArray.length) {
-            drawCircle(bacteriaArray[i].x, bacteriaArray[i].y, bacteriaArray[i].r, [0.24, 0.12, 0.45, 0.5]);
-            i++;
+            drawCircle(bacteria.x, bacteria.y, bacteria.r, [0.14, 0.34, 0.35, 0.5]);
         }
     }
 
     function calculateBacteriaCoordinates() {
-        var x = Math.random() >= .5 ? 0.6 : -0.6;
-        var y = Math.random() >= .5 ? 0.6 : -0.6;
+        var x = Math.random() >= .5 ? 0.7 : -0.7;
+        var y = Math.random() >= .5 ? 0.7 : -0.7;
         var trig = Math.random() >= .5 ? "sin" : "cos";
         var angle = Math.random();
+        console.log(x, y, angle, trig)
+        var x_coord, y_coord;
 
         if (trig == "sin") {
             x = x * Math.sin(angle);
@@ -280,47 +262,54 @@ function bacteriaBasher() {
         return [x, y];
     }
 
-    function createBacteria(bacteriaId) {
+    function createBacteria() {
         var id = bacteriaId;
         var consumingBacteriaArray = [];
 
         var bacteriaCoordinates = calculateBacteriaCoordinates();
 
-        var bacteria = { x: bacteriaCoordinates[0], y: bacteriaCoordinates[1], r: 0.06 }
+        var bacteria = { x: bacteriaCoordinates[0], y: bacteriaCoordinates[1], r: 0.07 }
 
-        var calculatingNewCoordinates = 250;
+        var calculatingNewCoordinates = 500;
         // Loop to check if the new bacteria isn't colliding with any of the present bacteria
-        console.log(bacteriaArray.length)
         for (var i = 0; i < bacteriaArray.length; i++) {
             // If no more room is left for bacteria to be created
             if (calculatingNewCoordinates == 0) {
+                console.log("no room")
                 break;
             }
 
             if (collidingBacteria(bacteria, bacteriaArray[i])) {
-                calculateBacteriaCoordinates();
-                bacteria = { x: bacteriaCoordinates[0], y: bacteriaCoordinates[1], r: 0.06 }
+                var newBacteriaCoordinates = calculateBacteriaCoordinates();
+                bacteria = { x: newBacteriaCoordinates[0], y: newBacteriaCoordinates[1], r: 0.07 }
                 calculatingNewCoordinates--;
                 i = -1;
             }
         }
 
-        bacteriaSpawned++;
-        return { id: id, x: bacteria.x, y: bacteria.y, r: bacteria.r, dead: false, consuming: consumingBacteriaArray }
+        bacteriaId += 1;
+        return {...bacteria, id: id, dead: false, consuming: consumingBacteriaArray }
     }
 
-    var i = 2;
-    while (i > 0) {
-        var createdBacteria = createBacteria(bacteriaSpawned);
-        bacteriaArray.push(createdBacteria)
-        drawCircle(createdBacteria.x, createdBacteria.y, createdBacteria.r, [0.04, 0.2, 0.35, 0.5]);
-        i--;
+    for (var i = 0; i < totalBacteria; i++) {
+        var createdBacteria = createBacteria();
+        bacteriaArray.push(createdBacteria);
+        drawCircle(createdBacteria.x, createdBacteria.y, createdBacteria.r, [0.14, 0.34, 0.35, 0.5]);
     }
-
-    destory(bacteriaArray[1], bacteriaArray.indexOf(bacteriaArray[1]), bacteriaArray)
 
     // Draw the game circle
-    drawCircle(0, 0, 0.6, [0.05, 0.1, 0.05, 0.5]);
+    console.log(bacteriaArray)
+
+    // Game Loop
+    function gameLoop() {
+        // Updates the score span element in the html
+        for (i in bacteriaArray) {
+            increaseBacteriaSize(bacteriaArray[i]);
+        }
+        drawCircle(0, 0, 0.7, [0.05, 0.1, 0.05, 0.5]);
+        requestAnimationFrame(gameLoop);
+    }
+    requestAnimationFrame(gameLoop);
 }
 
 window.onload = bacteriaBasher;
