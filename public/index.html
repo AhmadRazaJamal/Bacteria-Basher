@@ -20,9 +20,14 @@
 <body style="background: linear-gradient(90deg, #efd5ff 0%, #515ada 100%);">
     <div style="margin-left:10px; font-family: 'Poppins', sans-serif;">
         <h1>Bacteria Basher</h1>
-        <p>Bacteria Reaching Threshold:</p>
-        <p>Bacteria Poisoned:</p>
-        <p style="display: inline">Time Remaining: <p id="time_remaining" style="display: inline"></p></p>
+        <p style=>Lives Left:
+         <img id="heart_1" width="20px" height="20px" src="heart.png" style="margin-left: 10px; position: relative; top: 4px;"/>
+         <img id="heart_2" width="20px" height="20px" src="heart.png" style="margin-left: 10px; position: relative; top: 4px;"/>
+         <img id="heart_3" width="20px" height="20px" src="heart.png" style="margin-left: 10px; position: relative; top: 4px;"/>
+         <img id="dead" width="80px" height="70px" src="dead.png" style="margin-left: 10px; position: relative; top: 4px; display: none"/>
+         </p>
+        <p style="display: inline">Player Score: </p><p id="player_score" style="display: inline"></p>
+        <p style="display: block">Time Remaining: <p id="time_remaining" style="display: inline"></p></p>
             <script>
                 // Set the date we're counting down to
                 var countDownDate = new Date("Jan 5, 2022 15:15:60").getTime();
@@ -50,7 +55,7 @@
                 }}, 1000);
         </script>
     </div>
-    <canvas style="margin-left:15%" id="webgl"></canvas>
+    <canvas style="margin-left: 35%; width: 400px; height: 400px" id="webgl"></canvas>
     <canvas style="margin-left:15%" id="particleCanvas"
 </body>
 </html>

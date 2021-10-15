@@ -1,20 +1,24 @@
 // Write the vertex shader and fragment shader functions
 var vertexShaderText = [
     'attribute vec3 vertPosition;',
+    'varying vec3 fragColor;',
+    'attribute vec3 vertColor;',
     '',
     'void main() {',
+    '	fragColor = vertColor;',
     '	gl_Position = vec4(vertPosition, 1.0);',
     '}'
 ].join('\n');
 
 var fragmentShaderText = [
     'precision mediump float;',
-    'uniform vec4 color;',
-    '',
+    'varying vec3 fragColor;',
+
     'void main()',
     '{',
-    ' gl_FragColor = color;',
-    '}'
+
+    '	gl_FragColor = vec4(fragColor,1.0);',
+    '}',
 ].join('\n')
 
 function bacteriaBasher() {
@@ -45,8 +49,7 @@ function bacteriaBasher() {
     particleCanvas.height = window.innerHeight / 1.5;
 
     // Centered the circle at the center of the canvas
-    gl.viewport(0, 0, canvas.width / 1.7, canvas.height);
-    gl.viewport(0, 0, particleCanvas.width / 1.7, canvas.height);
+    gl.viewport(0, 0, canvas.width, canvas.height);
 
     /*  
     Create, Compile and link Shaders 
@@ -80,17 +83,15 @@ function bacteriaBasher() {
 
     gl.useProgram(program)
 
-    // Create and bind buffer 
-    var vertex_buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
-
-    // Get the attribute and uniform location
-    var coord = gl.getAttribLocation(program, "vertPosition");
-    var fColor = gl.getUniformLocation(program, "color");
-
-    // Point an attribute to the currently bound VBO and enable the attribute
-    gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(coord);
+    // Create and bind Buffer, load buffer data and link vertex attributes with buffer 
+    function attributeSet(gl, prog, attr_name, rsize, arr) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(arr),
+            gl.STATIC_DRAW);
+        var attr = gl.getAttribLocation(prog, attr_name);
+        gl.enableVertexAttribArray(attr);
+        gl.vertexAttribPointer(attr, rsize, gl.FLOAT, false, 0, 0);
+    }
 
     /*  
      Drawing
@@ -100,17 +101,28 @@ function bacteriaBasher() {
     var gameScore = 0;
     var bacteriaArray = [];
     var remainingBacteria = 25;
-    var bacteriaSpawned = 0;
-    var playerLives = 0;
-    var totalBacteria = 8;
+    var playerLives = 3;
+    var totalBacteria = 2;
     var bacteriaId = 0;
 
+    // Initialize player score as zero
+    const playerScoreTag = document.getElementById(`player_score`)
+    playerScoreTag.innerText = gameScore;
+
+
+    // Converts degrees to radians
+    function radian(degree) {
+        var rad = degree * (Math.PI / 360);
+        return rad;
+    }
+
     // Function to draw a circle
-    function drawCircle(x, y, radius, color) {
+    function drawCircle(x, y, radius, isBacteria) {
         var vertices = [];
+        var color = [];
 
         // Create vertices from 1 to 360
-        for (let i = 1; i <= 360; i++) {
+        for (let i = 1; i <= 360; i += 0.1) {
             var y1 = radius * Math.sin(i) + y;
             var x1 = radius * Math.cos(i) + x;
 
@@ -120,10 +132,20 @@ function bacteriaBasher() {
             vertices.push(x, y, 0)
             vertices.push(x1, y1, 0);
             vertices.push(x2, y2, 0);
+
+            if (!isBacteria) {
+                color.push(Math.cosh(radian(i)), Math.tan(radian(i)), Math.cosh(radian(i)));
+                color.push(Math.cosh(radian(i)), Math.cos(radian(i)), Math.cosh(radian(i)));
+                color.push(Math.cosh(radian(i)), Math.cos(radian(i)), Math.cosh(radian(i)));
+            } else {
+                color.push(Math.sin(radian(i)), Math.tan(radian(i)), Math.sin(radian(i)));
+                color.push(Math.sin(radian(i)), Math.cos(radian(i)), Math.sin(radian(i)));
+                color.push(Math.sin(radian(i)), Math.cos(radian(i)), Math.sin(radian(i)));
+            }
         }
 
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-        gl.uniform4f(fColor, color[0], color[1], color[2], color[3]);
+        attributeSet(gl, program, "vertPosition", 3, vertices);
+        attributeSet(gl, program, "vertColor", 3, color);
 
         gl.drawArrays(gl.TRIANGLES, 0, 360 * 3);
 
@@ -143,20 +165,26 @@ function bacteriaBasher() {
         return false;
     }
 
+    function decreasePlayerLives(lives) {
+        if (lives > 0) {
+            const heartImgTag = document.getElementById(`heart_${lives}`)
+            heartImgTag.style.display = "none";
+            playerLives--;
+        } else {
+            const deadImgTag = document.getElementById(`dead`)
+            deadImgTag.style.display = "initial";
+        }
+    }
+
     // Checks if a bacteria is clicked on
     canvas.onmousedown = function click(e) {
-        var mx = e.clientX,
-            my = e.clientY;
+        var x = e.clientX,
+            y = e.clientY;
 
-        mx = mx / canvas.width - 0.5;
-        my = my / canvas.height - 0.5;
-
-        mx = mx * 2;
-        my = my * -2;
-
-        console.log(mx + ' ' + my);
-        var x = mx;
-        var y = my;
+        // The height of the canvas is 400
+        const rect = e.target.getBoundingClientRect();
+        x = ((x - rect.left) - 400 / 2) / (400 / 2);
+        y = (400 / 2 - (y - rect.top)) / (400 / 2);
 
         var clickedPoint = { x: x, y: y, r: 0 };
 
@@ -164,9 +192,12 @@ function bacteriaBasher() {
         // Increase score and destroy the bacteria
         for (var i in bacteriaArray) {
             if (collidingBacteria(clickedPoint, bacteriaArray[i])) {
-                createExplosionAtBacteria(bacArr[i]);
+                kaboom(bacteriaArray[i]);
 
-                score += 1;
+                const playerScoreTag = document.getElementById(`player_score`)
+                gameScore += 1;
+                playerScoreTag.innerText = gameScore;
+
                 destroy(i);
                 hit = true;
                 break;
@@ -205,10 +236,7 @@ function bacteriaBasher() {
     function increaseBacteriaSize(bacteria) {
         if (!bacteria.dead) {
             // If the radius of bacteria is greater than 0.35, decrease player's life and kill the bacteria
-            if (bacteria.r > 0.35) {
-                destroy(bacteria, bacteriaArray.indexOf(bacteria));
-                playerLives--;
-            } else {
+            if (bacteria.r < 0.35) {
                 // Increase the size of each bacteria by 0.0003 each tick
                 bacteria.r += 0.0004;
 
@@ -243,18 +271,19 @@ function bacteriaBasher() {
                         }
                     }
                 }
+            } else {
+                destroy(bacteria, bacteriaArray.indexOf(bacteria));
+                decreasePlayerLives(playerLives)
             }
-            drawCircle(bacteria.x, bacteria.y, bacteria.r, [0.14, 0.34, 0.35, 0.5]);
+            drawCircle(bacteria.x, bacteria.y, bacteria.r, true);
         }
     }
 
     function calculateBacteriaCoordinates() {
-        var x = Math.random() >= .5 ? 0.7 : -0.7;
-        var y = Math.random() >= .5 ? 0.7 : -0.7;
+        var x = Math.random() >= .5 ? 0.6 : -0.6;
+        var y = Math.random() >= .5 ? 0.6 : -0.6;
         var trig = Math.random() >= .5 ? "sin" : "cos";
         var angle = Math.random();
-        console.log(x, y, angle, trig)
-        var x_coord, y_coord;
 
         if (trig == "sin") {
             x = x * Math.sin(angle);
@@ -279,7 +308,6 @@ function bacteriaBasher() {
         for (var i = 0; i < bacteriaArray.length; i++) {
             // If no more room is left for bacteria to be created
             if (calculatingNewCoordinates == 0) {
-                console.log("no room")
                 break;
             }
 
@@ -325,11 +353,8 @@ function bacteriaBasher() {
     for (var i = 0; i < totalBacteria; i++) {
         var createdBacteria = createBacteria();
         bacteriaArray.push(createdBacteria);
-        drawCircle(createdBacteria.x, createdBacteria.y, createdBacteria.r, [0.14, 0.34, 0.35, 0.5]);
+        drawCircle(createdBacteria.x, createdBacteria.y, createdBacteria.r, false);
     }
-
-    // Draw the game circle
-    console.log(bacteriaArray)
 
     // Game Loop
     function gameLoop() {
@@ -337,8 +362,10 @@ function bacteriaBasher() {
         for (i in bacteriaArray) {
             increaseBacteriaSize(bacteriaArray[i]);
         }
-        drawCircle(0, 0, 0.7, [0.05, 0.1, 0.05, 0.5]);
-        requestAnimationFrame(gameLoop);
+        drawCircle(0, 0, 0.6, false);
+        if (playerLives >= 0) {
+            requestAnimationFrame(gameLoop);
+        }
     }
     requestAnimationFrame(gameLoop);
 }
