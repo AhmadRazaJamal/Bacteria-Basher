@@ -325,7 +325,6 @@ function bacteriaBasher() {
 
     function kaboom(bacteria) { 
         //Create the explosion
-        console.log("createExplosion function was called");
         var x = bacteria.x;
         var y = bacteria.y;
         var r = bacteria.r; //radius
@@ -336,10 +335,9 @@ function bacteriaBasher() {
         var pCanvas = (document.getElementById('particleCanvas').getContext('2d'));
 
         //Draw the explosion on the particles canvas
-        console.log("draw function was called");
         if (life > 0) {
             pCanvas.beginPath();
-            pCanvas.arc(x, y, r, 0, Math.PI * 2);
+            pCanvas.arc(bacteria.x, bacteria.y, bacteria.r, 0, Math.PI * 2);
             pCanvas.fillStyle = color;
             pCanvas.fill();
             life--;
