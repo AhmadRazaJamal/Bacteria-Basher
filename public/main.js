@@ -30,11 +30,11 @@ var playerLives;
 function bacteriaBasher() {
 
     /* 
-    Set up WebGl context 
+    Set up WebGl ptx 
     */
     const canvas = document.querySelector("#webgl");
     const particleCanvas = document.querySelector("#particleCanvas");
-    // Initialize the GL context
+    // Initialize the GL ptx
     const gl = canvas.getContext("webgl");
 
     // Only continue if WebGL is available and working
@@ -350,28 +350,75 @@ function bacteriaBasher() {
         return {...bacteria, id: id, dead: false, consuming: consumingBacteriaArray }
     }
 
+    // Creates explosion at the bacteria just killed
     function kaboom(bacteria) {
-        //Create the explosion
-        var x = bacteria.x;
-        var y = bacteria.y;
-        var r = bacteria.r; //radius
-        var color = "rgba(71, 221, 71, 1)";
-        // bacteria.color = "rgba(" + Math.round((color[0]) * 255) + "," + Math.round((color[1]) * 255) + "," + Math.round((color[2]) * 255) + "," + 1 + ")";
-        var life = 20 + Math.random() * 5;
+        // Initialize particle variables
+        var ptx = particleCanvas.getContext("2d");
+        let particles = [];
 
-        var pCanvas = (document.getElementById('particleCanvas').getContext('2d'));
+        // Particle class 
+        class Particle {
+            constructor(x, y, radius, dx, dy, color) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.dx = dx;
+                this.dy = dy;
+                this.color = color;
+            }
+            draw() {
+                ptx.save();
+                ptx.fillStyle = `rgb(${this.color[0]*255}, ${this.color[1]*255}, ${this.color[2]*255})`;
 
-        //Draw the explosion on the particles canvas
-        if (life > 0) {
-            pCanvas.beginPath();
-            pCanvas.arc(bacteria.x, bacteria.y, bacteria.r, 0, Math.PI * 2);
-            pCanvas.fillStyle = color;
-            pCanvas.fill();
-            life--;
-            x -= 0.2;
-            y -= 0.2;
-            r -= 0.5;
+                // Begin arc path
+                ptx.beginPath();
+
+                // A circle is created
+                ptx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ptx.fill();
+
+                // Restore recent canvas context
+                ptx.restore();
+            }
+            update() {
+                this.draw();
+                this.x += this.dx;
+                this.y += this.dy;
+            }
         }
+
+        for (i = 0; i <= 50; i++) {
+            let dx = (Math.random() - 0.5) * (Math.random() * 10);
+            let dy = (Math.random() - 0.5) * (Math.random() * 10);
+            let radius = Math.random() * 5;
+
+            // Changinf bacteria coordinates to canvas coordinates
+            let particle = new Particle(
+                (bacteria.x + 2 / 75 + 1) * 350, -1 * (bacteria.y - 1) * 250,
+                radius,
+                dx,
+                dy,
+                RGB_values[bacteriaArray.indexOf(bacteria)]
+            );
+
+            // Create new particles
+            particles.push(particle);
+        }
+
+
+        /* Particle explosion function */
+        function explosion() {
+            // Clear the canvas and then draw the particles 
+            ptx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((particle, i) => {
+                particle.update()
+            })
+
+            // Animate
+            requestAnimationFrame(explosion);
+        }
+
+        explosion();
     }
 
     for (var i = 0; i < totalBacteria; i++) {
