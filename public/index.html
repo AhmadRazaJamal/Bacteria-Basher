@@ -1,10 +1,11 @@
-<!DOCTYPE <!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Project Assignment 1 - COSC 414</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <!-- <link rel="stylesheet" type="text/css" media="screen"/> -->
    
     <script 
@@ -19,40 +20,64 @@
 </head>
 
 <style>
-.start {
+.start, .restart {
   border: none;
-  background: green;
+  background: #ACDF87;
   color: white;
-  padding: 12px 12px;
+  padding: 10px 10px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
+  border-radius: 1em;
 }
 
-.buttonImg: {
-    width: 20px;
-    height: 20px;
+.buttonImg {
+    width: 30px;
+    height: 30px;
+    border-radius: 1em;
 }
+
+h1 {
+    font-family: 'Poppins';
+    font-weight: 800;
+    font-size: 4em;
+}
+
 
 </style>
 
 <body style="background: linear-gradient(90deg, #efd5ff 0%, #515ada 100%);">
-    <div style="margin-left:10px; font-family: 'Poppins', sans-serif;">
-        <h1>Bacteria Basher</h1>
-        <!-- <button class="start"><img class="buttonImg" src="public/imgs/play_btn.gif"></button>
-        <button class="restart">Restart</button> -->
-        <p style=>Lives Left:
-         <img id="heart_1" width="20px" height="20px" src="heart.png" style="margin-left: 10px; position: relative; top: 4px;"/>
-         <img id="heart_2" width="20px" height="20px" src="heart.png" style="margin-left: 10px; position: relative; top: 4px;"/>
-         <img id="heart_3" width="20px" height="20px" src="heart.png" style="margin-left: 10px; position: relative; top: 4px;"/>
-         <img id="dead" width="80px" height="70px" src="dead.png" style="margin-left: 10px; position: relative; top: 4px; display: none"/>
-         </p>
-        <p style="display: inline">Player Score: </p><p id="player_score" style="display: inline"></p>
+
+    <div class="container" style="margin-left: 20px; padding-top: 15px;">
+        <div class="row">
+            <div class="col-10">
+                <h1>Bacteria Basher</h1>
+                <p style=>Lives Left:
+                    <img id="heart_1" width="20px" height="20px" src="imgs/heart.png" style="margin-left: 10px; position: relative; top: 4px;"/>
+                    <img id="heart_2" width="20px" height="20px" src="imgs/heart.png" style="margin-left: 10px; position: relative; top: 4px;"/>
+                    <img id="heart_3" width="20px" height="20px" src="imgs/heart.png" style="margin-left: 10px; position: relative; top: 4px;"/>
+                    <img id="dead" width="80px" height="70px" src="imgs/dead.png" style="margin-left: 10px; position: relative; top: 4px; display: none"/>
+                </p>
+                <p style="display: inline">Player Score: </p><p id="player_score" style="display: inline"></p>
+            </div>
+            <div class="col-2">
+                <button class="start"><img class="buttonImg" src="imgs/play_btn.png"></button>
+                <button class="restart"><img class="buttonImg" src="imgs/restart_btn.png"></button>
+            </div>
+        </div>
+        
+        
+        
     </div>
     <canvas style="margin-left: 35%; width: 400px; height: 400px" id="webgl"></canvas>
     <canvas style="margin-left:15%" id="particleCanvas"></canvas>
+
+    <!-- Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 </html>
