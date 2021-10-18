@@ -21,12 +21,17 @@ var fragmentShaderText = [
     '}',
 ].join('\n')
 
+var bacteriaArray;
+var gameScore;
+const deadImgTag = document.getElementById(`dead`);
+var playerLives;
+
+
 function bacteriaBasher() {
 
     /* 
     Set up WebGl context 
     */
-
     const canvas = document.querySelector("#webgl");
     const particleCanvas = document.querySelector("#particleCanvas");
     // Initialize the GL context
@@ -98,11 +103,11 @@ function bacteriaBasher() {
     */
 
     // Game global variables
-    var gameScore = 0;
-    var bacteriaArray = [];
+    gameScore = 0;
+    bacteriaArray = [];
     // Spawn a total of 30 bacteria
     var remainingBacteria = 30;
-    var playerLives = 2;
+    playerLives = 2;
     var totalBacteria = 5;
     var RGB_values = [];
     // A variable that holds what color bacteria was recently destroyed, if it was green and then green 
@@ -182,7 +187,7 @@ function bacteriaBasher() {
     // A function that decreases the number of hearts for a player if it reaches a certain threshold
     function decreasePlayerLives(lives) {
         if (lives > 0) {
-            const heartImgTag = document.getElementById(`heart_${lives}`)
+            const heartImgTag = document.getElementById(`heart_${lives}`);
             heartImgTag.style.display = "none";
             playerLives--;
         } else {
@@ -383,29 +388,32 @@ function bacteriaBasher() {
         }
         drawCircle(0, 0, 0.6, false);
         if (playerLives > 0) {
+            // checkBtnPressed();
             requestAnimationFrame(startGame);
+            // checkBtnPressed();
+            // console.log("check btn pressed function called 1")
         } else {
-            const deadImgTag = document.getElementById(`dead`)
             deadImgTag.style.display = "initial";
-            stopGame();
+            gameOver.style.display = "block";
+            document.getElementById("gameOver").innerHTML += gameScore;
         }
     }
     requestAnimationFrame(startGame);
-
-    function stopGame() {
-        //destroy all bacteria on screen
-        for (i = 0; i < bacteriaArray.length; i++) {
-            destroy(bacteriaArray[i], i);
-        }
-        gameOver.style.display = "block";
-    }
-
-    function checkBtnPressed() {
-        var start_btn = document.getElementById("start");
-        var restart_btn = document.getElementById("restart");
-        start_btn.onclick = bacteriaBasher();
-        restart_btn.onclick = console.log("restart btn has been clicked");
-    }
 }
 
-window.onload = bacteriaBasher;
+function pressPlay() {
+    console.log("play button has been pressed");
+    bacteriaBasher();
+}
+
+function pressRestart() {
+    console.log("restart button has been pressed");
+    gameOver.style.display = "none";    //remove gameover text
+    deadImgTag.style.display = "none";  //remove deadImg
+    pressPlay();
+}
+
+
+
+// window.onload = bacteriaBasher;
+

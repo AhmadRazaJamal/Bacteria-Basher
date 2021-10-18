@@ -45,6 +45,16 @@ h1 {
     font-weight: 800;
     font-size: 4em;
 }
+
+input {
+    padding: 1em 2em 1em 2em;
+    font-family: 'Poppins';
+    background-color: #FF97FF;
+    border-radius: 1em;
+    border-color: hotpink;
+    border-width: 2px;
+    margin: 0.4em;
+}
 </style>
 
 <body style="background: linear-gradient(90deg, #efd5ff 0%, #515ada 100%);">
@@ -60,13 +70,15 @@ h1 {
                 <p style="display: inline">Player Score: </p><p id="player_score" style="display: inline"></p>
             </div>
             <div class="col-2">
-                <button id="start" value="submit"><img class="buttonImg" src="imgs/play_btn.png"></button>
-                <button id="restart" value="submit"><img class="buttonImg" src="imgs/restart_btn.png"></button>
+                <input type="button" value="PLAY" onclick="pressPlay()"/>
+                <input type="button" value="RESTART" onclick="pressRestart()"/>
+                <!-- <button id="start" value="submit" onclick="checkBtnPressed()"><img class="buttonImg" src="imgs/play_btn.png"></button> -->
+                <!-- <button id="restart" value="submit" onclick="checkBtnPressed()"><img class="buttonImg" src="imgs/restart_btn.png"></button> -->
             </div>
         </div> 
         <div class="row">
             <div class="col-12">
-                <h3 style="text-align: center; margin-left: 150px; display: none; color: red;" id="gameOver">GAME OVER</h3>
+                <h3 style="text-align: center; margin-left: 150px; display: none; color: hotpink;" id="gameOver">GAME OVER. Player Score: </h3>
             </div>
         </div>
     </div>
