@@ -463,16 +463,13 @@ function pressRestart() {
     heartImg1.style.display = "initial";
     heartImg2.style.display = "initial";
     gameScore = 0;
-    //reset and then add new gameScore to display
-    document.getElementById("gameOver").innerHTML = "";
-    document.getElementById("gameOver").innerHTML = "GAME OVER. Player Score: " + gameScore;
     pressPlay();
 }
 
 function checkForWin() {
-    if(gameScore >= 15) {
-        wonGameTxt.style.display="block";
-        for(i in bacteriaArray) {
+    if (gameScore >= 15) {
+        wonGameTxt.style.display = "block";
+        for (i in bacteriaArray) {
             bacteriaArray[i] = [];
         }
     }
