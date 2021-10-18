@@ -192,13 +192,14 @@ function bacteriaBasher() {
         // Increase score and destroy the bacteria
         for (var i in bacteriaArray) {
             if (collidingBacteria(clickedPoint, bacteriaArray[i])) {
+                console.log(clickedPoint, bacteriaArray[i])
                 kaboom(bacteriaArray[i]);
 
                 const playerScoreTag = document.getElementById(`player_score`)
                 gameScore += 1;
                 playerScoreTag.innerText = gameScore;
 
-                destroy(i);
+                destroy(bacteriaArray[i], i);
                 hit = true;
                 break;
             }
@@ -323,7 +324,7 @@ function bacteriaBasher() {
         return {...bacteria, id: id, dead: false, consuming: consumingBacteriaArray }
     }
 
-    function kaboom(bacteria) { 
+    function kaboom(bacteria) {
         //Create the explosion
         var x = bacteria.x;
         var y = bacteria.y;
