@@ -365,7 +365,7 @@ function bacteriaBasher() {
             requestAnimationFrame(startGame);
         }
     }
-    requestAnimationFrame(start);
+    requestAnimationFrame(startGame);
 }
 
 window.onload = bacteriaBasher;
