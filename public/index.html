@@ -62,6 +62,20 @@ input {
     display: inline;
     width: 200px;
 }
+
+#instructions {
+    position: absolute;
+    top: 150px;
+    right: 40px;
+    text-align: left;
+    width: 380px;
+    border: 1px solid floralwhite;
+    padding: 20px;
+    text-align: center;
+    border-radius: 32px;
+    color: burlywood;
+    background: darkmagenta;
+}
 </style>
 
 <body style="background: linear-gradient(90deg, #efd5ff 0%, #515ada 100%); font-family: 'Poppins' ">
@@ -80,10 +94,7 @@ input {
                 <div style="display: inline-flex">
                     <input type="button" value="PLAY" onclick="pressPlay()"/>
                     <input type="button" value="RESTART" onclick="pressRestart()"/>
-                    <!-- <button id="start" value="submit" onclick="checkBtnPressed()"><img class="buttonImg" src="imgs/play_btn.png"></button> -->
-                    <!-- <button id="restart" value="submit" onclick="checkBtnPressed()"><img class="buttonImg" src="imgs/restart_btn.png"></button> -->
                 </div>
-               
             </div>
         </div> 
         <div class="row">
@@ -96,6 +107,14 @@ input {
     </div>
     <canvas style="margin-left: 35%; width: 400px; height: 400px" id="webgl"></canvas>
     <canvas style="margin-left: 15%; left: 230px; width: 400px; height: 400px; position: absolute; z-index: -9" id="particleCanvas"></canvas>
+        <div id="instructions">
+            <p id="pressPlayTxt">
+                <strong>How to Play?</strong>
+                <p>Click on the bacteria to administer poison</p>
+                <p>You win if you poison 15 bacteria</p>
+                <p>You lose if 2 bacteria reach a game determined threshold</p>
+            </p>
+        </div>
 
     <!-- Bootstrap -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
