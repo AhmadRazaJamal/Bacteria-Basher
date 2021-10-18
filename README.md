@@ -8,9 +8,7 @@ To run:
 2. Open localhost:4000 in the browser
 3. Press 'Play' to begin!
 
-<p align ="center">
-  <img src = https://github.com/AhmadRazaJamal/Bacteria-Basher/blob/afb4f341e0d4f3bd4995a727f1f5782d6df355bd/gameStart.png width ="600"/>
-</p>
+<img src = https://github.com/AhmadRazaJamal/Bacteria-Basher/blob/afb4f341e0d4f3bd4995a727f1f5782d6df355bd/gameStart.png width ="600"/>
 
 
 _Created for COSC 414 - Computer Graphics | 2021 | Ahmad Jamal & Florencia Chomski_
