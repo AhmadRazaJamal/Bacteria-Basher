@@ -239,7 +239,7 @@ function bacteriaBasher() {
         }
 
         for (i in bacteriaArray) {
-            if (bacteriaArray[i] == undefined) {
+            if (bacteriaArray[i] == undefined || bacteriaArray[i].consuming == undefined) {
                 continue;
             }
             if (bacteriaArray[i].consuming.indexOf(bacteria) != -1) {
@@ -459,16 +459,23 @@ function pressRestart() {
     deadImgTag.style.display = "none"; //remove deadImg
     var heartImg1 = document.getElementById("heart_1");
     var heartImg2 = document.getElementById("heart_2");
+
     //reshow both heart images
     heartImg1.style.display = "initial";
     heartImg2.style.display = "initial";
     gameScore = 0;
+
+    // If game won remove the win message
+    document.getElementById("gameWon").style.display = "none";
     pressPlay();
+
 }
 
 function checkForWin() {
     if (gameScore >= 15) {
         wonGameTxt.style.display = "block";
+        document.getElementById("gameOver").innerHTML = "GAME OVER. Player Score: " + gameScore;
+        document.getElementById("gameOver").style.display = "block";
         for (i in bacteriaArray) {
             bacteriaArray[i] = [];
         }
