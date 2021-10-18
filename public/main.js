@@ -346,21 +346,11 @@ function bacteriaBasher() {
     }
 
     function kaboom(bacteria) {
-        //Create the explosion
-        /* Get the 2D context of the canvas  */
-        var ctx = particleCanvas.getContext("2d");
-
-        /* Fills or sets the color,gradient,pattern */
-        ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.font = "50px Arial";
-        ctx.fillStyle = "green";
-
-        /* Writes the required text  */
-        ctx.fillText("GFG", 200, 350)
+        // Initialize particle variables
+        var ptx = particleCanvas.getContext("2d");
         let particles = [];
 
-        /* Initialize particle object  */
+        // Particle class 
         class Particle {
             constructor(x, y, radius, dx, dy) {
                 this.x = x;
@@ -368,66 +358,52 @@ function bacteriaBasher() {
                 this.radius = radius;
                 this.dx = dx;
                 this.dy = dy;
-                this.alpha = 1;
             }
             draw() {
-                ctx.save();
-                ctx.globalAlpha = this.alpha;
-                ctx.fillStyle = 'green';
+                ptx.save();
+                ptx.fillStyle = 'green';
 
-                /* Begins or reset the path for 
-                   the arc created */
-                ctx.beginPath();
+                // Begin arc path
+                ptx.beginPath();
 
-                /* Some curve is created*/
-                ctx.arc(this.x, this.y, this.radius,
-                    0, Math.PI * 2, false);
+                // A circle is created
+                ptx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ptx.fill();
 
-                ctx.fill();
-
-                /* Restore the recent canvas context*/
-                ctx.restore();
+                // Restore recent canvas context
+                ptx.restore();
             }
             update() {
                 this.draw();
-                this.alpha -= 0.01;
                 this.x += this.dx;
                 this.y += this.dy;
             }
         }
 
-        /* Timer is set for particle push 
-            execution in intervals*/
-        console.log(bacteria)
-        for (i = 0; i <= 150; i++) {
-            let dx = (Math.random() - 0.5) * (Math.random() * 6);
-            let dy = (Math.random() - 0.5) * (Math.random() * 6);
-            let radius = Math.random() * 3;
+        for (i = 0; i <= 50; i++) {
+            let dx = (Math.random() - 0.5) * (Math.random() * 10);
+            let dy = (Math.random() - 0.5) * (Math.random() * 10);
+            let radius = Math.random() * 5;
             let particle = new Particle((bacteria.x + 2 / 75 + 1) * 350, -1 * (bacteria.y - 1) * 250, radius, dx, dy);
 
-            /* Adds new items like particle*/
+            // Create new particles
             particles.push(particle);
         }
 
 
         /* Particle explosion function */
-        function explode() {
-
-            /* Clears the given pixels in the rectangle */
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "white";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        function explosion() {
+            // Clear the canvas and then draw the particles 
+            ptx.clearRect(0, 0, canvas.width, canvas.height);
             particles.forEach((particle, i) => {
-                if (particle.alpha <= 0) {
-                    particles.splice(i, 1);
-                } else particle.update()
+                particle.update()
             })
 
-            /* Performs a animation after request*/
-            requestAnimationFrame(explode);
+            // Animate
+            requestAnimationFrame(explosion);
         }
 
-        explode();
+        explosion();
     }
 
     for (var i = 0; i < totalBacteria; i++) {
@@ -442,7 +418,7 @@ function bacteriaBasher() {
         for (i in bacteriaArray) {
             increaseBacteriaSize(bacteriaArray[i], i);
         }
-        // drawCircle(0, 0, 0.6, false);
+        drawCircle(0, 0, 0.6, false);
         if (playerLives > 0) {
             requestAnimationFrame(startGame);
         } else {
