@@ -103,7 +103,7 @@ function bacteriaBasher() {
     // Spawn a total of 30 bacteria
     var remainingBacteria = 30;
     var playerLives = 2;
-    var totalBacteria = 2;
+    var totalBacteria = 5;
     var RGB_values = [];
     // A variable that holds what color bacteria was recently destroyed, if it was green and then green 
     // again, don't reduce points, else if they are two different colored ones, reduce player points
@@ -385,28 +385,27 @@ function bacteriaBasher() {
         if (playerLives > 0) {
             requestAnimationFrame(startGame);
         } else {
-            stopGame();
             const deadImgTag = document.getElementById(`dead`)
             deadImgTag.style.display = "initial";
+            stopGame();
         }
     }
     requestAnimationFrame(startGame);
 
     function stopGame() {
-        console.log("stopGame function has been run")
-            //destroy all bacteria on screen
+        //destroy all bacteria on screen
         for (i = 0; i < bacteriaArray.length; i++) {
             destroy(bacteriaArray[i], i);
         }
         gameOver.style.display = "block";
     }
+
+    function checkBtnPressed() {
+        var start_btn = document.getElementById("start");
+        var restart_btn = document.getElementById("restart");
+        start_btn.onclick = bacteriaBasher();
+        restart_btn.onclick = console.log("restart btn has been clicked");
+    }
 }
 
 window.onload = bacteriaBasher;
-
-// window.onload = function() {
-//     var start_btn = document.getElementById("start");
-//     var restart_btn = document.getElementById("restart");
-//     start_btn.onclick = bacteriaBasher();
-//     restart_btn.onclick = console.log("restart btn has been clicked");
-// }
