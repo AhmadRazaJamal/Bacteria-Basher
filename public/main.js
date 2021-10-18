@@ -382,8 +382,6 @@ function bacteriaBasher() {
             }
         }
 
-        console.log(RGB_values[bacteriaArray.indexOf(bacteria)])
-
         for (i = 0; i <= 50; i++) {
             let dx = (Math.random() - 0.5) * (Math.random() * 10);
             let dy = (Math.random() - 0.5) * (Math.random() * 10);
