@@ -448,13 +448,11 @@ function bacteriaBasher() {
 }
 
 function pressPlay() {
-    console.log("play button has been pressed");
     pressPlayTxt.style.display = "none";
     bacteriaBasher();
 }
 
 function pressRestart() {
-    console.log("restart button has been pressed");
     gameOver.style.display = "none"; //remove gameover text
     deadImgTag.style.display = "none"; //remove deadImg
     var heartImg1 = document.getElementById("heart_1");
