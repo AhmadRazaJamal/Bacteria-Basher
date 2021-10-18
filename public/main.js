@@ -104,6 +104,15 @@ function bacteriaBasher() {
     var remainingBacteria = 30;
     var playerLives = 3;
     var totalBacteria = 6;
+    var RGB_values = [];
+    // A variable that holds what color bacteria was recently destroyed, if it was green and then green 
+    // again, don't reduce points, else if they are two different colored ones, reduce player points
+    var recentColorDestroyed = [];
+
+    // Add color values to the RGB array 
+    for (var i = 0; i < totalBacteria; i++) {
+        RGB_values.push([Math.tan(i), Math.tanh(i), Math.sin(i)]);
+    }
 
     // Initialize player score as zero
     const playerScoreTag = document.getElementById(`player_score`)
@@ -116,7 +125,7 @@ function bacteriaBasher() {
     }
 
     // Function to draw a circle
-    function drawCircle(x, y, r, isBacteria) {
+    function drawCircle(x, y, r, isBacteria, index) {
         var vertices = [];
         var color = [];
 
@@ -138,9 +147,9 @@ function bacteriaBasher() {
                 color.push(Math.cosh(radian(i)), Math.cos(radian(i)), Math.cosh(radian(i)));
                 color.push(Math.cosh(radian(i)), Math.cos(radian(i)), Math.cosh(radian(i)));
             } else {
-                color.push(Math.sin(radian(i)), Math.tan(radian(i)), Math.sin(radian(i)));
-                color.push(Math.sin(radian(i)), Math.cos(radian(i)), Math.sin(radian(i)));
-                color.push(Math.sin(radian(i)), Math.cos(radian(i)), Math.sin(radian(i)));
+                color.push(RGB_values[index][0], RGB_values[index][1], RGB_values[index][2]);
+                color.push(RGB_values[index][0], RGB_values[index][1], RGB_values[index][2]);
+                color.push(RGB_values[index][0], RGB_values[index][1], RGB_values[index][2]);
             }
         }
 
@@ -219,6 +228,9 @@ function bacteriaBasher() {
         }
 
         for (i in bacteriaArray) {
+            if (bacteriaArray[i] == undefined) {
+                continue;
+            }
             if (bacteriaArray[i].consuming.indexOf(bacteria) != -1) {
                 bacteriaArray[i].consuming.splice(bacteriaArray[i].consuming.indexOf(bacteria), 1);
             }
@@ -226,17 +238,16 @@ function bacteriaBasher() {
 
         // Set the bacteria consumption array to empty and remove it from the bacteria array
         bacteria.consuming = [];
-        bacteriaArray.splice(index, 1);
+        bacteriaArray[index] = undefined;
 
-        // Create new bacteria if we have room for more & if player still has remaining lives
-        if (remainingBacteria >= totalBacteria && playerLives > 0) {
-            bacteriaArray.push(createBacteria());
+        if (remainingBacteria >= totalBacteria & playerLives > 0) {
+            bacteriaArray[bacteriaArray.findIndex(Object.is.bind(null, undefined))] = (createBacteria());
             createBacteria(bacteriaArray[totalBacteria - 1]);
         }
     }
 
-    function increaseBacteriaSize(bacteria) {
-        if (!bacteria.dead) {
+    function increaseBacteriaSize(bacteria, index) {
+        if (bacteria !== undefined && !bacteria.dead) {
             // If the radius of bacteria is greater than 0.35, decrease player's life and kill the bacteria
             if (bacteria.r < 0.35) {
                 // Increase the size of each bacteria by 0.0003 each tick
@@ -245,7 +256,7 @@ function bacteriaBasher() {
                 // Checking if the bacteria to updates collides with any of the bacteria in the array
                 for (var i = 0; i < bacteriaArray.length; i++) {
                     // Skip itslef 
-                    if (bacteria == bacteriaArray[i]) {
+                    if (bacteria == bacteriaArray[i] || bacteriaArray[i] == undefined) {
                         continue;
                     }
                     // If the bacteria aren't in each other consumption arrays 
@@ -274,10 +285,14 @@ function bacteriaBasher() {
                     }
                 }
             } else {
+                // If bacteria reaches threshold size, then destroy bacteria and reduce player score
+                if (recentColorDestroyed !== RGB_values[index]) {
+                    decreasePlayerLives(playerLives)
+                }
+                recentColorDestroyed = RGB_values[index];
                 destroy(bacteria, bacteriaArray.indexOf(bacteria));
-                decreasePlayerLives(playerLives)
             }
-            drawCircle(bacteria.x, bacteria.y, bacteria.r, true);
+            drawCircle(bacteria.x, bacteria.y, bacteria.r, true, index);
         }
     }
 
@@ -308,6 +323,7 @@ function bacteriaBasher() {
         var calculatingNewCoordinates = 500;
         // Loop to check if the new bacteria isn't colliding with any of the present bacteria
         for (var i = 0; i < bacteriaArray.length; i++) {
+            if (bacteriaArray[i] == undefined) { continue; }
             // If no more room is left for bacteria to be created
             if (calculatingNewCoordinates == 0) {
                 break;
@@ -351,14 +367,14 @@ function bacteriaBasher() {
     for (var i = 0; i < totalBacteria; i++) {
         var createdBacteria = createBacteria();
         bacteriaArray.push(createdBacteria);
-        drawCircle(createdBacteria.x, createdBacteria.y, createdBacteria.r, false);
+        drawCircle(createdBacteria.x, createdBacteria.y, createdBacteria.r, false, i);
     }
 
     // Starts the game and loops till either all bacteria are killed or player lives are equal to zero
     function startGame() {
         // Updates the score span element in the html
         for (i in bacteriaArray) {
-            increaseBacteriaSize(bacteriaArray[i]);
+            increaseBacteriaSize(bacteriaArray[i], i);
         }
         drawCircle(0, 0, 0.6, false);
         if (playerLives > 0) {
