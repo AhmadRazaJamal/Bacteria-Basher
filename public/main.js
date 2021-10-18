@@ -464,6 +464,7 @@ function pressRestart() {
     heartImg1.style.display = "initial";
     heartImg2.style.display = "initial";
     gameScore = 0;
+    document.getElementById("gameOver").innerHTML = "GAME OVER. Player Score: ";
 
     // If game won remove the win message
     document.getElementById("gameWon").style.display = "none";
@@ -474,7 +475,6 @@ function pressRestart() {
 function checkForWin() {
     if (gameScore >= 15) {
         wonGameTxt.style.display = "block";
-        document.getElementById("gameOver").innerHTML = "GAME OVER. Player Score: " + gameScore;
         document.getElementById("gameOver").style.display = "block";
         for (i in bacteriaArray) {
             bacteriaArray[i] = [];
