@@ -439,8 +439,8 @@ function bacteriaBasher() {
             checkForWin();
             requestAnimationFrame(startGame);
         } else {
-            // gameOver.style.display = "block";
-            // document.getElementById("gameOver").innerText += " " + gameScore;
+            gameOver.style.display = "block";
+            document.getElementById("gameOver").innerText += " " + gameScore;
         }
     }
     requestAnimationFrame(startGame);
