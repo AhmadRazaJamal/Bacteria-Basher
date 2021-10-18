@@ -104,6 +104,12 @@ function bacteriaBasher() {
     var remainingBacteria = 30;
     var playerLives = 3;
     var totalBacteria = 6;
+    var RGB_values = []
+
+    // Add color values to the RGB array 
+    for (var i = 0; i < totalBacteria; i++) {
+        RGB_values.push([Math.random(), Math.random(), Math.random()]);
+    }
 
     // Initialize player score as zero
     const playerScoreTag = document.getElementById(`player_score`)
@@ -116,7 +122,7 @@ function bacteriaBasher() {
     }
 
     // Function to draw a circle
-    function drawCircle(x, y, r, isBacteria) {
+    function drawCircle(x, y, r, isBacteria, index) {
         var vertices = [];
         var color = [];
 
@@ -138,9 +144,9 @@ function bacteriaBasher() {
                 color.push(Math.cosh(radian(i)), Math.cos(radian(i)), Math.cosh(radian(i)));
                 color.push(Math.cosh(radian(i)), Math.cos(radian(i)), Math.cosh(radian(i)));
             } else {
-                color.push(Math.sin(radian(i)), Math.tan(radian(i)), Math.sin(radian(i)));
-                color.push(Math.sin(radian(i)), Math.cos(radian(i)), Math.sin(radian(i)));
-                color.push(Math.sin(radian(i)), Math.cos(radian(i)), Math.sin(radian(i)));
+                color.push(RGB_values[index][0], RGB_values[index][1], RGB_values[index][2]);
+                color.push(RGB_values[index][0], RGB_values[index][1], RGB_values[index][2]);
+                color.push(RGB_values[index][0], RGB_values[index][1], RGB_values[index][2]);
             }
         }
 
@@ -235,7 +241,7 @@ function bacteriaBasher() {
         }
     }
 
-    function increaseBacteriaSize(bacteria) {
+    function increaseBacteriaSize(bacteria, index) {
         if (!bacteria.dead) {
             // If the radius of bacteria is greater than 0.35, decrease player's life and kill the bacteria
             if (bacteria.r < 0.35) {
@@ -277,7 +283,7 @@ function bacteriaBasher() {
                 destroy(bacteria, bacteriaArray.indexOf(bacteria));
                 decreasePlayerLives(playerLives)
             }
-            drawCircle(bacteria.x, bacteria.y, bacteria.r, true);
+            drawCircle(bacteria.x, bacteria.y, bacteria.r, true, index);
         }
     }
 
@@ -351,14 +357,14 @@ function bacteriaBasher() {
     for (var i = 0; i < totalBacteria; i++) {
         var createdBacteria = createBacteria();
         bacteriaArray.push(createdBacteria);
-        drawCircle(createdBacteria.x, createdBacteria.y, createdBacteria.r, false);
+        drawCircle(createdBacteria.x, createdBacteria.y, createdBacteria.r, false, i);
     }
 
     // Starts the game and loops till either all bacteria are killed or player lives are equal to zero
     function startGame() {
         // Updates the score span element in the html
         for (i in bacteriaArray) {
-            increaseBacteriaSize(bacteriaArray[i]);
+            increaseBacteriaSize(bacteriaArray[i], i);
         }
         drawCircle(0, 0, 0.6, false);
         if (playerLives >= 0) {
