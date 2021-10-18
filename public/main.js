@@ -456,9 +456,15 @@ function pressRestart() {
     console.log("restart button has been pressed");
     gameOver.style.display = "none";    //remove gameover text
     deadImgTag.style.display = "none";  //remove deadImg
+    var heartImg1 = document.getElementById("heart_1");
+    var heartImg2 = document.getElementById("heart_2");
+    //reshow both heart images
+    heartImg1.style.display = "initial";
+    heartImg2.style.display = "initial";
     gameScore = 0;
+    //reset and then add new gameScore to display
     document.getElementById("gameOver").innerHTML = "";
-    document.getElementById("gameOver").innerHTML += "GAME OVER. Player Score: " + gameScore;
+    document.getElementById("gameOver").innerHTML = "GAME OVER. Player Score: " + gameScore;
     pressPlay();
 }
 
