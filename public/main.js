@@ -24,12 +24,12 @@ var fragmentShaderText = [
 function bacteriaBasher() {
 
     /* 
-    Set up WebGl context 
+    Set up WebGl ptx 
     */
 
     const canvas = document.querySelector("#webgl");
     const particleCanvas = document.querySelector("#particleCanvas");
-    // Initialize the GL context
+    // Initialize the GL ptx
     const gl = canvas.getContext("webgl");
 
     // Only continue if WebGL is available and working
@@ -347,26 +347,87 @@ function bacteriaBasher() {
 
     function kaboom(bacteria) {
         //Create the explosion
-        var x = bacteria.x;
-        var y = bacteria.y;
-        var r = bacteria.r; //radius
-        var color = "rgba(71, 221, 71, 1)";
-        // bacteria.color = "rgba(" + Math.round((color[0]) * 255) + "," + Math.round((color[1]) * 255) + "," + Math.round((color[2]) * 255) + "," + 1 + ")";
-        var life = 20 + Math.random() * 5;
+        /* Get the 2D context of the canvas  */
+        var ctx = particleCanvas.getContext("2d");
 
-        var pCanvas = (document.getElementById('particleCanvas').getContext('2d'));
+        /* Fills or sets the color,gradient,pattern */
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.font = "50px Arial";
+        ctx.fillStyle = "green";
 
-        //Draw the explosion on the particles canvas
-        if (life > 0) {
-            pCanvas.beginPath();
-            pCanvas.arc(bacteria.x, bacteria.y, bacteria.r, 0, Math.PI * 2);
-            pCanvas.fillStyle = color;
-            pCanvas.fill();
-            life--;
-            x -= 0.2;
-            y -= 0.2;
-            r -= 0.5;
+        /* Writes the required text  */
+        ctx.fillText("GFG", 200, 350)
+        let particles = [];
+
+        /* Initialize particle object  */
+        class Particle {
+            constructor(x, y, radius, dx, dy) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.dx = dx;
+                this.dy = dy;
+                this.alpha = 1;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = 'green';
+
+                /* Begins or reset the path for 
+                   the arc created */
+                ctx.beginPath();
+
+                /* Some curve is created*/
+                ctx.arc(this.x, this.y, this.radius,
+                    0, Math.PI * 2, false);
+
+                ctx.fill();
+
+                /* Restore the recent canvas context*/
+                ctx.restore();
+            }
+            update() {
+                this.draw();
+                this.alpha -= 0.01;
+                this.x += this.dx;
+                this.y += this.dy;
+            }
         }
+
+        /* Timer is set for particle push 
+            execution in intervals*/
+        console.log(bacteria)
+        for (i = 0; i <= 150; i++) {
+            let dx = (Math.random() - 0.5) * (Math.random() * 6);
+            let dy = (Math.random() - 0.5) * (Math.random() * 6);
+            let radius = Math.random() * 3;
+            let particle = new Particle((bacteria.x + 2 / 75 + 1) * 350, -1 * (bacteria.y - 1) * 250, radius, dx, dy);
+
+            /* Adds new items like particle*/
+            particles.push(particle);
+        }
+
+
+        /* Particle explosion function */
+        function explode() {
+
+            /* Clears the given pixels in the rectangle */
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((particle, i) => {
+                if (particle.alpha <= 0) {
+                    particles.splice(i, 1);
+                } else particle.update()
+            })
+
+            /* Performs a animation after request*/
+            requestAnimationFrame(explode);
+        }
+
+        explode();
     }
 
     for (var i = 0; i < totalBacteria; i++) {
@@ -381,7 +442,7 @@ function bacteriaBasher() {
         for (i in bacteriaArray) {
             increaseBacteriaSize(bacteriaArray[i], i);
         }
-        drawCircle(0, 0, 0.6, false);
+        // drawCircle(0, 0, 0.6, false);
         if (playerLives > 0) {
             requestAnimationFrame(startGame);
         } else {
