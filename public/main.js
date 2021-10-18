@@ -191,8 +191,8 @@ function bacteriaBasher() {
             const heartImgTag = document.getElementById(`heart_${lives}`);
             heartImgTag.style.display = "none";
             playerLives--;
-        } else {
-            const deadImgTag = document.getElementById(`dead`)
+        }
+        if (gameScore < 15 && lives == 1) {
             deadImgTag.style.display = "initial";
         }
     }
@@ -297,7 +297,7 @@ function bacteriaBasher() {
                 }
             } else {
                 // If bacteria reaches threshold size, then destroy bacteria and reduce player score
-                if (recentColorDestroyed !== RGB_values[index]) {
+                if (recentColorDestroyed !== RGB_values[index] && gameScore < 15) {
                     decreasePlayerLives(playerLives)
                 }
                 recentColorDestroyed = RGB_values[index];
@@ -439,9 +439,8 @@ function bacteriaBasher() {
             checkForWin();
             requestAnimationFrame(startGame);
         } else {
-            deadImgTag.style.display = "initial";
-            gameOver.style.display = "block";
-            document.getElementById("gameOver").innerHTML += gameScore;
+            // gameOver.style.display = "block";
+            // document.getElementById("gameOver").innerText += " " + gameScore;
         }
     }
     requestAnimationFrame(startGame);
@@ -456,9 +455,10 @@ function pressPlay() {
 function pressRestart() {
     console.log("restart button has been pressed");
     gameOver.style.display = "none"; //remove gameover text
-    deadImgTag.style.display = "none"; //remove deadImg
+    // deadImgTag.style.display = "none"; //remove deadImg
     var heartImg1 = document.getElementById("heart_1");
     var heartImg2 = document.getElementById("heart_2");
+    deadImgTag.style.display = "none";
 
     //reshow both heart images
     heartImg1.style.display = "initial";
@@ -476,6 +476,7 @@ function checkForWin() {
     if (gameScore >= 15) {
         wonGameTxt.style.display = "block";
         document.getElementById("gameOver").style.display = "block";
+        document.getElementById("gameOver").innerText = "GAME OVER. Player Score: " + gameScore;
         for (i in bacteriaArray) {
             bacteriaArray[i] = [];
         }
