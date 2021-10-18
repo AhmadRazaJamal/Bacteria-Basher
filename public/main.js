@@ -100,15 +100,14 @@ function bacteriaBasher() {
     // Game global variables
     var gameScore = 0;
     var bacteriaArray = [];
-    var remainingBacteria = 25;
+    // Spawn a total of 30 bacteria
+    var remainingBacteria = 30;
     var playerLives = 3;
-    var totalBacteria = 2;
-    var bacteriaId = 0;
+    var totalBacteria = 6;
 
     // Initialize player score as zero
     const playerScoreTag = document.getElementById(`player_score`)
     playerScoreTag.innerText = gameScore;
-
 
     // Converts degrees to radians
     function radian(degree) {
@@ -117,22 +116,23 @@ function bacteriaBasher() {
     }
 
     // Function to draw a circle
-    function drawCircle(x, y, radius, isBacteria) {
+    function drawCircle(x, y, r, isBacteria) {
         var vertices = [];
         var color = [];
 
         // Create vertices from 1 to 360
         for (let i = 1; i <= 360; i += 0.1) {
-            var y1 = radius * Math.sin(i) + y;
-            var x1 = radius * Math.cos(i) + x;
+            var y1 = Math.sin(i) * r + y;
+            var x1 = Math.cos(i) * r + x;
 
-            var y2 = radius * Math.sin(i + 1) + y;
-            var x2 = radius * Math.cos(i + 1) + x;
+            var y2 = Math.sin(i + 1) * r + y;
+            var x2 = Math.cos(i + 1) * r + x;
 
             vertices.push(x, y, 0)
             vertices.push(x1, y1, 0);
             vertices.push(x2, y2, 0);
 
+            // If bacteria then add green color else add pink color to the game surface
             if (!isBacteria) {
                 color.push(Math.cosh(radian(i)), Math.tan(radian(i)), Math.cosh(radian(i)));
                 color.push(Math.cosh(radian(i)), Math.cos(radian(i)), Math.cosh(radian(i)));
@@ -151,6 +151,7 @@ function bacteriaBasher() {
 
     }
 
+    // Find the distance between two bacteria 
     function distance(bacteria_1, bacteria_2) {
         var distance_x = bacteria_2.x - bacteria_1.x;
         var distance_y = bacteria_2.y - bacteria_1.y;
@@ -165,6 +166,7 @@ function bacteriaBasher() {
         return false;
     }
 
+    // A function that decreases the number of hearts for a player if it reaches a certain threshold
     function decreasePlayerLives(lives) {
         if (lives > 0) {
             const heartImgTag = document.getElementById(`heart_${lives}`)
@@ -228,7 +230,7 @@ function bacteriaBasher() {
 
         // Create new bacteria if we have room for more
         if (remainingBacteria >= totalBacteria) {
-            bacteriaArray.push(createBacteria(bacteriaId));
+            bacteriaArray.push(createBacteria());
             createBacteria(bacteriaArray[totalBacteria - 1]);
         }
     }
@@ -296,7 +298,7 @@ function bacteriaBasher() {
     }
 
     function createBacteria() {
-        var id = bacteriaId;
+        var id = Math.random();
         var consumingBacteriaArray = [];
 
         var bacteriaCoordinates = calculateBacteriaCoordinates();
@@ -319,7 +321,6 @@ function bacteriaBasher() {
             }
         }
 
-        bacteriaId += 1;
         return {...bacteria, id: id, dead: false, consuming: consumingBacteriaArray }
     }
 
@@ -353,18 +354,18 @@ function bacteriaBasher() {
         drawCircle(createdBacteria.x, createdBacteria.y, createdBacteria.r, false);
     }
 
-    // Game Loop
-    function gameLoop() {
+    // Starts the game and loops till either all bacteria are killed or player lives are equal to zero
+    function startGame() {
         // Updates the score span element in the html
         for (i in bacteriaArray) {
             increaseBacteriaSize(bacteriaArray[i]);
         }
         drawCircle(0, 0, 0.6, false);
         if (playerLives >= 0) {
-            requestAnimationFrame(gameLoop);
+            requestAnimationFrame(startGame);
         }
     }
-    requestAnimationFrame(gameLoop);
+    requestAnimationFrame(start);
 }
 
 window.onload = bacteriaBasher;
