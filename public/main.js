@@ -103,7 +103,7 @@ function bacteriaBasher() {
     // Spawn a total of 30 bacteria
     var remainingBacteria = 30;
     var playerLives = 3;
-    var totalBacteria = 2;
+    var totalBacteria = 6;
     var RGB_values = [];
     // A variable that holds what color bacteria was recently destroyed, if it was green and then green 
     // again, don't reduce points, else if they are two different colored ones, reduce player points
@@ -228,6 +228,9 @@ function bacteriaBasher() {
         }
 
         for (i in bacteriaArray) {
+            if (bacteriaArray[i] == undefined) {
+                continue;
+            }
             if (bacteriaArray[i].consuming.indexOf(bacteria) != -1) {
                 bacteriaArray[i].consuming.splice(bacteriaArray[i].consuming.indexOf(bacteria), 1);
             }
@@ -244,7 +247,7 @@ function bacteriaBasher() {
     }
 
     function increaseBacteriaSize(bacteria, index) {
-        if (!bacteria.dead && bacteria !== undefined) {
+        if (bacteria !== undefined && !bacteria.dead) {
             // If the radius of bacteria is greater than 0.35, decrease player's life and kill the bacteria
             if (bacteria.r < 0.35) {
                 // Increase the size of each bacteria by 0.0003 each tick
@@ -253,7 +256,7 @@ function bacteriaBasher() {
                 // Checking if the bacteria to updates collides with any of the bacteria in the array
                 for (var i = 0; i < bacteriaArray.length; i++) {
                     // Skip itslef 
-                    if (bacteria == bacteriaArray[i]) {
+                    if (bacteria == bacteriaArray[i] || bacteriaArray[i] == undefined) {
                         continue;
                     }
                     // If the bacteria aren't in each other consumption arrays 
