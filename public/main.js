@@ -474,5 +474,3 @@ function checkForWin() {
         }
     }
 }
-
-// window.onload = bacteriaBasher;
