@@ -389,13 +389,13 @@ function bacteriaBasher() {
         }
 
         for (i = 0; i <= 50; i++) {
-            let dx = (Math.random() - 0.5) * (Math.random() * 10);
-            let dy = (Math.random() - 0.5) * (Math.random() * 10);
-            let radius = Math.random() * 5;
+            let dx = (Math.random() - 0.5) * (Math.random() * 6);
+            let dy = (Math.random() - 0.5) * (Math.random() * 6);
+            let radius = Math.random() * 3;
 
             // Changinf bacteria coordinates to canvas coordinates
             let particle = new Particle(
-                (bacteria.x + 2 / 75 + 1) * 350, -1 * (bacteria.y - 1) * 250,
+                (bacteria.x + 2 / 75 + 1) * 600, -1 * (bacteria.y - 1) * 250,
                 radius,
                 dx,
                 dy,
@@ -454,8 +454,8 @@ function pressPlay() {
 
 function pressRestart() {
     console.log("restart button has been pressed");
-    gameOver.style.display = "none";    //remove gameover text
-    deadImgTag.style.display = "none";  //remove deadImg
+    gameOver.style.display = "none"; //remove gameover text
+    deadImgTag.style.display = "none"; //remove deadImg
     var heartImg1 = document.getElementById("heart_1");
     var heartImg2 = document.getElementById("heart_2");
     //reshow both heart images
