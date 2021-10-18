@@ -162,14 +162,18 @@ function bacteriaBasher() {
 
     // Find the distance between two bacteria 
     function distance(bacteria_1, bacteria_2) {
+        if (bacteria_1 == undefined || bacteria_2 == undefined) return;
+
         var distance_x = bacteria_2.x - bacteria_1.x;
         var distance_y = bacteria_2.y - bacteria_1.y;
         return Math.sqrt(Math.pow(distance_x, 2) + Math.pow(distance_y, 2));
     }
 
     // Checks if two bacteria are colliding with each other
-    function collidingBacteria(bacteria1, bacteria2) {
-        if (distance(bacteria1, bacteria2) - (bacteria1.r + bacteria2.r) < 0) {
+    function collidingBacteria(bacteria_1, bacteria_2) {
+        if (bacteria_1 == undefined || bacteria_2 == undefined) return;
+
+        if (distance(bacteria_1, bacteria_2) - (bacteria_1.r + bacteria_2.r) < 0) {
             return true;
         }
         return false;
@@ -217,6 +221,7 @@ function bacteriaBasher() {
     }
 
     function destroy(bacteria, index) {
+        if (bacteria == undefined) { return; }
         bacteria.dead = true;
         remainingBacteria -= 1;
         bacteria.x = 0;
@@ -389,7 +394,7 @@ function bacteriaBasher() {
 
     function stopGame() {
         console.log("stopGame function has been run")
-        //destroy all bacteria on screen
+            //destroy all bacteria on screen
         for (i = 0; i < bacteriaArray.length; i++) {
             destroy(bacteriaArray[i], i);
         }
