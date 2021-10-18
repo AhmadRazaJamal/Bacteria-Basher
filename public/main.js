@@ -377,11 +377,31 @@ function bacteriaBasher() {
             increaseBacteriaSize(bacteriaArray[i], i);
         }
         drawCircle(0, 0, 0.6, false);
-        if (playerLives >= 0) {
+        if (playerLives > 0) {
             requestAnimationFrame(startGame);
+        } else {
+            stopGame();
+            const deadImgTag = document.getElementById(`dead`)
+            deadImgTag.style.display = "initial";
         }
     }
     requestAnimationFrame(startGame);
+
+    function stopGame() {
+        console.log("stopGame function has been run")
+        //destroy all bacteria on screen
+        for (i = 0; i < bacteriaArray.length; i++) {
+            destroy(bacteriaArray[i], i);
+        }
+        gameOver.style.display = "block";
+    }
 }
 
 window.onload = bacteriaBasher;
+
+// window.onload = function() {
+//     var start_btn = document.getElementById("start");
+//     var restart_btn = document.getElementById("restart");
+//     start_btn.onclick = bacteriaBasher();
+//     restart_btn.onclick = console.log("restart btn has been clicked");
+// }

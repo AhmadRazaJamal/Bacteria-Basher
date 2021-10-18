@@ -16,11 +16,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
-    <script src="main.js" defer></script>
+    <script type="text/javascript" src="main.js" defer></script>
 </head>
 
 <style>
-.start, .restart {
+#start, #restart {
   border: none;
   background: #ACDF87;
   color: white;
@@ -45,12 +45,9 @@ h1 {
     font-weight: 800;
     font-size: 4em;
 }
-
-
 </style>
 
 <body style="background: linear-gradient(90deg, #efd5ff 0%, #515ada 100%);">
-
     <div class="container" style="margin-left: 20px; padding-top: 15px;">
         <div class="row">
             <div class="col-10">
@@ -64,16 +61,18 @@ h1 {
                 <p style="display: inline">Player Score: </p><p id="player_score" style="display: inline"></p>
             </div>
             <div class="col-2">
-                <button class="start"><img class="buttonImg" src="imgs/play_btn.png"></button>
-                <button class="restart"><img class="buttonImg" src="imgs/restart_btn.png"></button>
+                <button id="start" value="submit"><img class="buttonImg" src="imgs/play_btn.png"></button>
+                <button id="restart"><img class="buttonImg" src="imgs/restart_btn.png"></button>
+            </div>
+        </div> 
+        <div class="row">
+            <div class="col-12">
+                <h3 style="text-align: center; margin-left: 150px; display: none; color: red;" id="gameOver">GAME OVER</h3>
             </div>
         </div>
-        
-        
-        
     </div>
     <canvas style="margin-left: 35%; width: 400px; height: 400px" id="webgl"></canvas>
-    <canvas style="margin-left:15%" id="particleCanvas"></canvas>
+    <canvas style="margin-left:15%; width: 400px; height: 400px;" id="particleCanvas"></canvas>
 
     <!-- Bootstrap -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
