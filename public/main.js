@@ -237,8 +237,7 @@ function bacteriaBasher() {
         bacteria.consuming = [];
         bacteriaArray[index] = undefined;
 
-        // Create new bacteria if we have room for more
-        if (remainingBacteria >= totalBacteria) {
+        if (remainingBacteria >= totalBacteria & playerLives > 0) {
             bacteriaArray[bacteriaArray.findIndex(Object.is.bind(null, undefined))] = (createBacteria());
             createBacteria(bacteriaArray[totalBacteria - 1]);
         }
