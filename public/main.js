@@ -102,8 +102,8 @@ function bacteriaBasher() {
     var bacteriaArray = [];
     // Spawn a total of 30 bacteria
     var remainingBacteria = 30;
-    var playerLives = 3;
-    var totalBacteria = 6;
+    var playerLives = 2;
+    var totalBacteria = 2;
     var RGB_values = [];
     // A variable that holds what color bacteria was recently destroyed, if it was green and then green 
     // again, don't reduce points, else if they are two different colored ones, reduce player points
