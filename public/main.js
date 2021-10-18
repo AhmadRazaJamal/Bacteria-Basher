@@ -175,6 +175,7 @@ function bacteriaBasher() {
         } else {
             const deadImgTag = document.getElementById(`dead`)
             deadImgTag.style.display = "initial";
+            //stop process of growing bacteria//
         }
     }
 
@@ -229,7 +230,7 @@ function bacteriaBasher() {
         bacteriaArray.splice(index, 1);
 
         // Create new bacteria if we have room for more
-        if (remainingBacteria >= totalBacteria) {
+        if (remainingBacteria >= totalBacteria && playerLives > 0) {
             bacteriaArray.push(createBacteria());
             createBacteria(bacteriaArray[totalBacteria - 1]);
         }
