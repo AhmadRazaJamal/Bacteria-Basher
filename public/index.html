@@ -64,20 +64,20 @@ input {
 }
 </style>
 
-<body style="background: linear-gradient(90deg, #efd5ff 0%, #515ada 100%);">
+<body style="background: linear-gradient(90deg, #efd5ff 0%, #515ada 100%); font-family: 'Poppins' ">
     <div class="container" style="margin-left: 20px; padding-top: 15px;">
         <div class="row">
             <div class="col-10">
                 <h1 style="position: relative; left: -4px">Bacteria Basher</h1>
                 <p style=>Lives Left:
-                    <img id="heart_1" width="20px" height="20px" src="imgs/heart.png" style="margin-left: 10px; position: relative; top: 4px;"/>
-                    <img id="heart_2" width="20px" height="20px" src="imgs/heart.png" style="margin-left: 10px; position: relative; top: 4px;"/>
+                    <img id="heart_1" width="20px" height="20px" src="imgs/heart.png" style="margin-left: 10px; position: relative; top: -4px;"/>
+                    <img id="heart_2" width="20px" height="20px" src="imgs/heart.png" style="margin-left: 10px; position: relative; top: -4px;"/>
                     <img id="dead" width="80px" height="70px" src="imgs/dead.png" style="margin-left: 10px; position: relative; top: 4px; display: none"/>
                 </p>
                 <p style="display: inline">Player Score: </p><p id="player_score" style="display: inline"></p>
             </div>
             <div class="col-2">
-                <div clas="inline-btns">
+                <div style="display: inline-flex">
                     <input type="button" value="PLAY" onclick="pressPlay()"/>
                     <input type="button" value="RESTART" onclick="pressRestart()"/>
                     <!-- <button id="start" value="submit" onclick="checkBtnPressed()"><img class="buttonImg" src="imgs/play_btn.png"></button> -->
@@ -87,10 +87,10 @@ input {
             </div>
         </div> 
         <div class="row">
-            <div class="col-12">
+            <div class="col-12" style="margin-left: 18px">
                 <h3 style="text-align: center; margin-left: 150px; margin-top: 200px; color: black;" id="pressPlayTxt">Press Play to Begin!</h3>
                 <h3 style="text-align: center; margin-left: 150px; display: none; color: hotpink;" id="gameOver">GAME OVER. Player Score: </h3>
-                <h3 style="text-align: center; margin-left: 150px; display: none; color: hotpink;" id="gameWon">You Win! :)</h3>
+                <h3 style="text-align: center; margin-left: 150px; display: none; color: hotpink;" id="gameWon">You Win a cookie! 🍪</h3>
             </div>
         </div>
     </div>
