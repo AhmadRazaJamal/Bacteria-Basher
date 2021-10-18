@@ -25,6 +25,7 @@ var bacteriaArray;
 var gameScore;
 const deadImgTag = document.getElementById(`dead`);
 const pressPlayTxt = document.getElementById('pressPlayTxt');
+var wonGameTxt = document.getElementById("gameWon");
 var playerLives;
 
 
@@ -436,6 +437,7 @@ function bacteriaBasher() {
         }
         drawCircle(0, 0, 0.6, false);
         if (playerLives > 0) {
+            checkForWin();
             requestAnimationFrame(startGame);
         } else {
             deadImgTag.style.display = "initial";
@@ -466,6 +468,12 @@ function pressRestart() {
     document.getElementById("gameOver").innerHTML = "";
     document.getElementById("gameOver").innerHTML = "GAME OVER. Player Score: " + gameScore;
     pressPlay();
+}
+
+function checkForWin() {
+    if(gameScore >= 15) {
+        wonGameTxt.style.display="block";
+    }
 }
 
 
