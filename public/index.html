@@ -17,9 +17,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
     <script src="main.js" defer></script>
 </head>
+
+<style>
+.start {
+  border: none;
+  background: green;
+  color: white;
+  padding: 12px 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.buttonImg: {
+    width: 20px;
+    height: 20px;
+}
+
+</style>
+
 <body style="background: linear-gradient(90deg, #efd5ff 0%, #515ada 100%);">
     <div style="margin-left:10px; font-family: 'Poppins', sans-serif;">
         <h1>Bacteria Basher</h1>
+        <button class="start"><img width="20px" height="20px" class="buttonImg" src="https://cdn2.iconfinder.com/data/icons/media-player-ui/512/Media-Icon-13-512.png"></button>
+        <button class="restart">Restart</button>
         <p style=>Lives Left:
          <img id="heart_1" width="20px" height="20px" src="heart.png" style="margin-left: 10px; position: relative; top: 4px;"/>
          <img id="heart_2" width="20px" height="20px" src="heart.png" style="margin-left: 10px; position: relative; top: 4px;"/>
