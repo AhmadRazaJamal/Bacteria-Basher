@@ -345,6 +345,7 @@ function bacteriaBasher() {
         return {...bacteria, id: id, dead: false, consuming: consumingBacteriaArray }
     }
 
+    // Creates explosion at the bacteria just killed
     function kaboom(bacteria) {
         // Initialize particle variables
         var ptx = particleCanvas.getContext("2d");
@@ -352,16 +353,17 @@ function bacteriaBasher() {
 
         // Particle class 
         class Particle {
-            constructor(x, y, radius, dx, dy) {
+            constructor(x, y, radius, dx, dy, color) {
                 this.x = x;
                 this.y = y;
                 this.radius = radius;
                 this.dx = dx;
                 this.dy = dy;
+                this.color = color;
             }
             draw() {
                 ptx.save();
-                ptx.fillStyle = 'green';
+                ptx.fillStyle = `rgb(${this.color[0]*255}, ${this.color[1]*255}, ${this.color[2]*255})`;
 
                 // Begin arc path
                 ptx.beginPath();
@@ -380,11 +382,21 @@ function bacteriaBasher() {
             }
         }
 
+        console.log(RGB_values[bacteriaArray.indexOf(bacteria)])
+
         for (i = 0; i <= 50; i++) {
             let dx = (Math.random() - 0.5) * (Math.random() * 10);
             let dy = (Math.random() - 0.5) * (Math.random() * 10);
             let radius = Math.random() * 5;
-            let particle = new Particle((bacteria.x + 2 / 75 + 1) * 350, -1 * (bacteria.y - 1) * 250, radius, dx, dy);
+
+            // Changinf bacteria coordinates to canvas coordinates
+            let particle = new Particle(
+                (bacteria.x + 2 / 75 + 1) * 350, -1 * (bacteria.y - 1) * 250,
+                radius,
+                dx,
+                dy,
+                RGB_values[bacteriaArray.indexOf(bacteria)]
+            );
 
             // Create new particles
             particles.push(particle);
