@@ -24,6 +24,7 @@ var fragmentShaderText = [
 var bacteriaArray;
 var gameScore;
 const deadImgTag = document.getElementById(`dead`);
+const pressPlayTxt = document.getElementById('pressPlayTxt');
 var playerLives;
 
 
@@ -435,10 +436,7 @@ function bacteriaBasher() {
         }
         drawCircle(0, 0, 0.6, false);
         if (playerLives > 0) {
-            // checkBtnPressed();
             requestAnimationFrame(startGame);
-            // checkBtnPressed();
-            // console.log("check btn pressed function called 1")
         } else {
             deadImgTag.style.display = "initial";
             gameOver.style.display = "block";
@@ -450,6 +448,7 @@ function bacteriaBasher() {
 
 function pressPlay() {
     console.log("play button has been pressed");
+    pressPlayTxt.style.display = "none";
     bacteriaBasher();
 }
 
@@ -457,10 +456,11 @@ function pressRestart() {
     console.log("restart button has been pressed");
     gameOver.style.display = "none";    //remove gameover text
     deadImgTag.style.display = "none";  //remove deadImg
+    gameScore = 0;
+    document.getElementById("gameOver").innerHTML = "";
+    document.getElementById("gameOver").innerHTML += "GAME OVER. Player Score: " + gameScore;
     pressPlay();
 }
 
 
-
 // window.onload = bacteriaBasher;
-

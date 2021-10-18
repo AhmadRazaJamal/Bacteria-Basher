@@ -54,6 +54,13 @@ input {
     border-color: hotpink;
     border-width: 2px;
     margin: 0.4em;
+    display: inline;
+    width: 200px;
+}
+
+.inline-btns {
+    display: inline;
+    width: 200px;
 }
 </style>
 
@@ -70,14 +77,18 @@ input {
                 <p style="display: inline">Player Score: </p><p id="player_score" style="display: inline"></p>
             </div>
             <div class="col-2">
-                <input type="button" value="PLAY" onclick="pressPlay()"/>
-                <input type="button" value="RESTART" onclick="pressRestart()"/>
-                <!-- <button id="start" value="submit" onclick="checkBtnPressed()"><img class="buttonImg" src="imgs/play_btn.png"></button> -->
-                <!-- <button id="restart" value="submit" onclick="checkBtnPressed()"><img class="buttonImg" src="imgs/restart_btn.png"></button> -->
+                <div clas="inline-btns">
+                    <input type="button" value="PLAY" onclick="pressPlay()"/>
+                    <input type="button" value="RESTART" onclick="pressRestart()"/>
+                    <!-- <button id="start" value="submit" onclick="checkBtnPressed()"><img class="buttonImg" src="imgs/play_btn.png"></button> -->
+                    <!-- <button id="restart" value="submit" onclick="checkBtnPressed()"><img class="buttonImg" src="imgs/restart_btn.png"></button> -->
+                </div>
+               
             </div>
         </div> 
         <div class="row">
             <div class="col-12">
+                <h3 style="text-align: center; margin-left: 150px; margin-top: 200px; color: black;" id="pressPlayTxt">Press Play to Begin!</h3>
                 <h3 style="text-align: center; margin-left: 150px; display: none; color: hotpink;" id="gameOver">GAME OVER. Player Score: </h3>
             </div>
         </div>
