@@ -235,17 +235,17 @@ function bacteriaBasher() {
 
         // Set the bacteria consumption array to empty and remove it from the bacteria array
         bacteria.consuming = [];
-        bacteriaArray.splice(index, 1);
+        bacteriaArray[index] = undefined;
 
         // Create new bacteria if we have room for more
         if (remainingBacteria >= totalBacteria) {
-            bacteriaArray.push(createBacteria());
+            bacteriaArray[bacteriaArray.findIndex(Object.is.bind(null, undefined))] = (createBacteria());
             createBacteria(bacteriaArray[totalBacteria - 1]);
         }
     }
 
     function increaseBacteriaSize(bacteria, index) {
-        if (!bacteria.dead) {
+        if (!bacteria.dead && bacteria !== undefined) {
             // If the radius of bacteria is greater than 0.35, decrease player's life and kill the bacteria
             if (bacteria.r < 0.35) {
                 // Increase the size of each bacteria by 0.0003 each tick
@@ -284,7 +284,6 @@ function bacteriaBasher() {
                 }
             } else {
                 // If bacteria reaches threshold size, then destroy bacteria and reduce player score
-                console.log(recentColorDestroyed)
                 if (recentColorDestroyed !== RGB_values[index]) {
                     decreasePlayerLives(playerLives)
                 }
@@ -322,6 +321,7 @@ function bacteriaBasher() {
         var calculatingNewCoordinates = 500;
         // Loop to check if the new bacteria isn't colliding with any of the present bacteria
         for (var i = 0; i < bacteriaArray.length; i++) {
+            if (bacteriaArray[i] == undefined) { continue; }
             // If no more room is left for bacteria to be created
             if (calculatingNewCoordinates == 0) {
                 break;
