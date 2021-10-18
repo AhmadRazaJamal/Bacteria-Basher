@@ -21,18 +21,18 @@ var fragmentShaderText = [
     '}',
 ].join('\n')
 
-var bacteriaArray;
-var gameScore;
 const deadImgTag = document.getElementById(`dead`);
 const pressPlayTxt = document.getElementById('pressPlayTxt');
 var wonGameTxt = document.getElementById("gameWon");
+var bacteriaArray;
+var gameScore;
 var playerLives;
 
 
 function bacteriaBasher() {
 
     /* 
-    Set up WebGl ptx 
+    SET UP WEBGL PTX
     */
     const canvas = document.querySelector("#webgl");
     const particleCanvas = document.querySelector("#particleCanvas");
@@ -59,7 +59,7 @@ function bacteriaBasher() {
     gl.viewport(0, 0, canvas.width, canvas.height);
 
     /*  
-    Create, Compile and link Shaders 
+    CREATE, COMPILE, AND LINK SHADERS
     */
     var vertexShader = gl.createShader(gl.VERTEX_SHADER);
     var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
@@ -101,9 +101,8 @@ function bacteriaBasher() {
     }
 
     /*  
-     Drawing
+     DRAWING
     */
-
     // Game global variables
     gameScore = 0;
     bacteriaArray = [];
@@ -473,8 +472,10 @@ function pressRestart() {
 function checkForWin() {
     if(gameScore >= 15) {
         wonGameTxt.style.display="block";
+        for(i in bacteriaArray) {
+            bacteriaArray[i] = [];
+        }
     }
 }
-
 
 // window.onload = bacteriaBasher;
