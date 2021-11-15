@@ -3,6 +3,11 @@ function Transformation() {
     this.fields = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
 }
 
+var bacteriaScalingMatrix = new Transformation();
+bacteriaScalingMatrix[0] = 0.1;
+bacteriaScalingMatrix[5] = 0.1;
+bacteriaScalingMatrix[10] = 0.1;
+
 // Multiply matrices, to chain transformations
 Transformation.prototype.mult = function(t) {
     var output = new Transformation()
@@ -34,6 +39,14 @@ Transformation.prototype.scale = function(x, y, z) {
     mat.fields[5] = Number(y) || 0
     mat.fields[10] = Number(z) || 0
     return this.mult(mat)
+}
+
+// Multiply by scaling up matrix
+Transformation.prototype.scaleUp = function(x, y, z) {
+    bacteriaScalingMatrix.fields[0] += Number(x) || 0
+    bacteriaScalingMatrix.fields[5] += Number(y) || 0
+    bacteriaScalingMatrix.fields[10] += Number(z) || 0
+    return this.mult(bacteriaScalingMatrix)
 }
 
 // Multiply by rotation matrix around X axis

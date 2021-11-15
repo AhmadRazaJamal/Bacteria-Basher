@@ -22,8 +22,9 @@ Mesh.prototype.draw = function(shaderProgram) {
 Mesh.prototype.drawBacteria = function(shaderProgram) {
     var scale = this.position.scale(0.1, 0.1, 0.1);
     var transform = this.position.translate(40, 30, 1);
-
-    scale.mult(transform).sendToGpu(this.gl, shaderProgram.view);
+    var scaleUp = this.position.scaleUp(0.01, 0.01, 0.01);
+    console.log(scaleUp)
+    scale.mult(transform).mult(scaleUp).sendToGpu(this.gl, shaderProgram.view);
 
     this.positions.bindToAttribute(shaderProgram.position)
     this.normals.bindToAttribute(shaderProgram.normal)
