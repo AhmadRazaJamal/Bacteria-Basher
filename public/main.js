@@ -144,40 +144,13 @@ function bacteriaBasher() {
     }
 
     // Function to draw a circle
-    function drawCircle(x, y, r, isBacteria, index) {
-        // var vertices = [];
-        // var color = [];
-
-        // // Create vertices from 1 to 360
-        // for (let i = 1; i <= 360; i += 0.1) {
-        //     var y1 = Math.sin(i) * r + y;
-        //     var x1 = Math.cos(i) * r + x;
-
-        //     var y2 = Math.sin(i + 1) * r + y;
-        //     var x2 = Math.cos(i + 1) * r + x;
-
-        //     vertices.push(x, y, 0)
-        //     vertices.push(x1, y1, 0);
-        //     vertices.push(x2, y2, 0);
-
-        //     // If bacteria then add green color else add pink color to the game surface
-        //     if (!isBacteria) {
-        //         color.push(Math.cosh(radian(i)), Math.tan(radian(i)), Math.cosh(radian(i)));
-        //         color.push(Math.cosh(radian(i)), Math.cos(radian(i)), Math.cosh(radian(i)));
-        //         color.push(Math.cosh(radian(i)), Math.cos(radian(i)), Math.cosh(radian(i)));
-        //     } else {
-        //         color.push(RGB_values[index][0], RGB_values[index][1], RGB_values[index][2]);
-        //         color.push(RGB_values[index][0], RGB_values[index][1], RGB_values[index][2]);
-        //         color.push(RGB_values[index][0], RGB_values[index][1], RGB_values[index][2]);
-        //     }
-        // }
-
-        var renderer = new Renderer(document.getElementById('webgl'))
+    async function drawCircle(canvasName, isBacteria, objectFileSrc) {
+        var renderer = new Renderer(document.getElementById(canvasName))
         var gl = renderer.getContext()
 
         var objects = []
 
-        Mesh.load(gl, 'sphere.obj')
+        await Mesh.load(gl, objectFileSrc)
             .then(function(mesh) {
                 objects.push(mesh)
             })
@@ -188,12 +161,12 @@ function bacteriaBasher() {
         camera.setOrthographic(16, 10, 10)
         var light = new Light()
 
-        renderer.render(camera, light, objects, gl)
+        isBacteria ? renderer.renderBacteria(camera, light, objects, gl) : renderer.render(camera, light, objects, gl);
 
         loop()
 
         function loop() {
-            renderer.render(camera, light, objects, gl)
+            isBacteria ? renderer.renderBacteria(camera, light, objects, gl) : renderer.render(camera, light, objects, gl);
             camera.position = camera.position.rotateY(Math.PI / 120)
             requestAnimationFrame(loop)
         }
@@ -484,7 +457,8 @@ function bacteriaBasher() {
     // }
     // requestAnimationFrame(startGame);
 
-    drawCircle(0, 0, 0.6, false);
+    drawCircle("webgl", false, "sphere.obj");
+    drawCircle("webgl", true, "sphere.obj");
 }
 
 function pressPlay() {

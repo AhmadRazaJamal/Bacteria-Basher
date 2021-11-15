@@ -19,6 +19,19 @@ Mesh.prototype.draw = function(shaderProgram) {
     this.gl.drawArrays(this.gl.TRIANGLES, 0, this.vertexCount)
 }
 
+Mesh.prototype.drawBacteria = function(shaderProgram) {
+    var scale = this.position.scale(0.1, 0.1, 0.1);
+    var transform = this.position.translate(40, 30, 1);
+
+    scale.mult(transform).sendToGpu(this.gl, shaderProgram.view);
+
+    this.positions.bindToAttribute(shaderProgram.position)
+    this.normals.bindToAttribute(shaderProgram.normal)
+    this.position.sendToGpu(this.gl, shaderProgram.model)
+    this.gl.drawArrays(this.gl.TRIANGLES, 0, this.vertexCount)
+}
+
+
 Mesh.load = function(gl, modelUrl) {
     var geometry = Geometry.loadOBJ(modelUrl)
     return Promise.all([geometry]).then(function(params) {
