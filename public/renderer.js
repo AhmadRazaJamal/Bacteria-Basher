@@ -17,9 +17,10 @@ Renderer.prototype.setShader = function(shader) {
     this.shader = shader
 }
 
-Renderer.prototype.render = function(camera, light, objects, gl) {
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+Renderer.prototype.render = function(camera, light, objects) {
+    this.gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     var shader = this.shader
+    console.log(shader)
     if (!shader) {
         return
     }

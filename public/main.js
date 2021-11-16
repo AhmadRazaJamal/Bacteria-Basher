@@ -1,37 +1,24 @@
 // Write the vertex shader and fragment shader functions
 var vertexShaderText = [
-    'attribute vec3 position;',
-    'attribute vec3 normal;',
-    'attribute vec2 uv;',
-    'uniform mat4 model;',
-    'uniform mat4 view;',
-    'uniform mat4 projection;',
-    'varying vec3 vNormal;',
-    'varying vec2 vUv;',
-
+    'attribute vec3 vertPosition;',
+    'varying vec3 fragColor;',
+    'attribute vec3 vertColor;',
+    '',
     'void main() {',
-    'vUv = uv;',
-    'vNormal = (model * vec4(normal, 0.)).xyz;',
-    'gl_Position = projection * view * model * vec4(position, 1.);',
+    '	fragColor = vertColor;',
+    '	gl_Position = vec4(vertPosition, 1.0);',
     '}'
 ].join('\n');
 
 var fragmentShaderText = [
-    '#ifdef GL_ES',
     'precision mediump float;',
-    '#endif',
+    'varying vec3 fragColor;',
 
-    'varying vec3 vNormal;',
-    'varying vec2 vUv;',
+    'void main()',
+    '{',
 
-    'void main() {',
-    'vec3 green = vec3(.14, .47, .07);',
-    'vec3 sunlightDirection = vec3(-1., -1., -1.);',
-    'float lightness = -clamp(dot(normalize(vNormal), normalize(sunlightDirection)), -1., 0.);',
-    'float ambientLight = 0.3;',
-    'lightness = ambientLight + (1. - ambientLight) * lightness;',
-    'gl_FragColor = vec4(green * lightness, 1.);',
-    '}'
+    '	gl_FragColor = vec4(fragColor,1.0);',
+    '}',
 ].join('\n')
 
 const deadImgTag = document.getElementById(`dead`);
@@ -145,64 +132,37 @@ function bacteriaBasher() {
 
     // Function to draw a circle
     function drawCircle(x, y, r, isBacteria, index) {
-        // var vertices = [];
-        // var color = [];
+        var vertices = [];
+        var color = [];
 
-        // // Create vertices from 1 to 360
-        // for (let i = 1; i <= 360; i += 0.1) {
-        //     var y1 = Math.sin(i) * r + y;
-        //     var x1 = Math.cos(i) * r + x;
+        // Create vertices from 1 to 360
+        for (let i = 1; i <= 360; i += 0.1) {
+            var y1 = Math.sin(i) * r + y;
+            var x1 = Math.cos(i) * r + x;
 
-        //     var y2 = Math.sin(i + 1) * r + y;
-        //     var x2 = Math.cos(i + 1) * r + x;
+            var y2 = Math.sin(i + 1) * r + y;
+            var x2 = Math.cos(i + 1) * r + x;
 
-        //     vertices.push(x, y, 0)
-        //     vertices.push(x1, y1, 0);
-        //     vertices.push(x2, y2, 0);
+            vertices.push(x, y, 0)
+            vertices.push(x1, y1, 0);
+            vertices.push(x2, y2, 0);
 
-        //     // If bacteria then add green color else add pink color to the game surface
-        //     if (!isBacteria) {
-        //         color.push(Math.cosh(radian(i)), Math.tan(radian(i)), Math.cosh(radian(i)));
-        //         color.push(Math.cosh(radian(i)), Math.cos(radian(i)), Math.cosh(radian(i)));
-        //         color.push(Math.cosh(radian(i)), Math.cos(radian(i)), Math.cosh(radian(i)));
-        //     } else {
-        //         color.push(RGB_values[index][0], RGB_values[index][1], RGB_values[index][2]);
-        //         color.push(RGB_values[index][0], RGB_values[index][1], RGB_values[index][2]);
-        //         color.push(RGB_values[index][0], RGB_values[index][1], RGB_values[index][2]);
-        //     }
-        // }
-
-        var renderer = new Renderer(document.getElementById('webgl'))
-        renderer.setClearColor(100, 149, 237)
-        var gl = renderer.getContext()
-
-        var objects = []
-
-        Mesh.load(gl, 'sphere.obj')
-            .then(function(mesh) {
-                objects.push(mesh)
-            })
-
-        renderer.setShader(new ShaderProgram(gl, vertexShaderText, fragmentShaderText))
-
-        var camera = new Camera()
-        camera.setOrthographic(16, 10, 10)
-        var light = new Light()
-
-        renderer.render(camera, light, objects, gl)
-
-        loop()
-
-        function loop() {
-            renderer.render(camera, light, objects, gl)
-            camera.position = camera.position.rotateY(Math.PI / 120)
-            requestAnimationFrame(loop)
+            // If bacteria then add green color else add pink color to the game surface
+            if (!isBacteria) {
+                color.push(Math.cosh(radian(i)), Math.tan(radian(i)), Math.cosh(radian(i)));
+                color.push(Math.cosh(radian(i)), Math.cos(radian(i)), Math.cosh(radian(i)));
+                color.push(Math.cosh(radian(i)), Math.cos(radian(i)), Math.cosh(radian(i)));
+            } else {
+                color.push(RGB_values[index][0], RGB_values[index][1], RGB_values[index][2]);
+                color.push(RGB_values[index][0], RGB_values[index][1], RGB_values[index][2]);
+                color.push(RGB_values[index][0], RGB_values[index][1], RGB_values[index][2]);
+            }
         }
 
-        // attributeSet(gl, program, "vertPosition", 3, vertices);
-        // attributeSet(gl, program, "vertColor", 3, color);
+        attributeSet(gl, program, "vertPosition", 3, vertices);
+        attributeSet(gl, program, "vertColor", 3, color);
 
-        // gl.drawArrays(gl.TRIANGLES, 0, 360 * 3);
+        gl.drawArrays(gl.TRIANGLES, 0, 360 * 3);
 
     }
 
@@ -409,7 +369,7 @@ function bacteriaBasher() {
             }
             draw() {
                 ptx.save();
-                ptx.fillStyle = `rgb(${this.color[0] * 255}, ${this.color[1] * 255}, ${this.color[2] * 255})`;
+                ptx.fillStyle = `rgb(${this.color[0]*255}, ${this.color[1]*255}, ${this.color[2]*255})`;
 
                 // Begin arc path
                 ptx.beginPath();
@@ -462,30 +422,28 @@ function bacteriaBasher() {
         explosion();
     }
 
-    // for (var i = 0; i < totalBacteria; i++) {
-    //     var createdBacteria = createBacteria();
-    //     bacteriaArray.push(createdBacteria);
-    //     drawCircle(createdBacteria.x, createdBacteria.y, createdBacteria.r, false, i);
-    // }
+    for (var i = 0; i < totalBacteria; i++) {
+        var createdBacteria = createBacteria();
+        bacteriaArray.push(createdBacteria);
+        drawCircle(createdBacteria.x, createdBacteria.y, createdBacteria.r, false, i);
+    }
 
     // Starts the game and loops till either all bacteria are killed or player lives are equal to zero
-    // function startGame() {
-    //     // Updates the score span element in the html
-    //     for (i in bacteriaArray) {
-    //         increaseBacteriaSize(bacteriaArray[i], i);
-    //     }
-    //     drawCircle(0, 0, 0.6, false);
-    //     if (playerLives > 0) {
-    //         checkForWin();
-    //         requestAnimationFrame(startGame);
-    //     } else {
-    //         gameOver.style.display = "block";
-    //         document.getElementById("gameOver").innerText += " " + gameScore;
-    //     }
-    // }
-    // requestAnimationFrame(startGame);
-
-    drawCircle(0, 0, 0.6, false);
+    function startGame() {
+        // Updates the score span element in the html
+        for (i in bacteriaArray) {
+            increaseBacteriaSize(bacteriaArray[i], i);
+        }
+        drawCircle(0, 0, 0.6, false);
+        if (playerLives > 0) {
+            checkForWin();
+            requestAnimationFrame(startGame);
+        } else {
+            gameOver.style.display = "block";
+            document.getElementById("gameOver").innerText += " " + gameScore;
+        }
+    }
+    requestAnimationFrame(startGame);
 }
 
 function pressPlay() {
