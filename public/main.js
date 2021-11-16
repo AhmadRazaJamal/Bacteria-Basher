@@ -63,13 +63,13 @@ function bacteriaBasher() {
     // Clear the color buffer with specified clear color
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth / 1.5;
+    canvas.height = window.innerHeight / 1.5;
     particleCanvas.width = window.innerWidth / 1.5;
     particleCanvas.height = window.innerHeight / 1.5;
 
     // Centered the circle at the center of the canvas
-    gl.viewport(0, 0, canvas.width, canvas.height / 1.5);
+    gl.viewport(0, 0, canvas.width, canvas.height);
 
     /*  
     CREATE, COMPILE, AND LINK SHADERS
@@ -173,6 +173,7 @@ function bacteriaBasher() {
         // }
 
         var renderer = new Renderer(document.getElementById('webgl'))
+        renderer.setClearColor(100, 149, 237)
         var gl = renderer.getContext()
 
         var objects = []
