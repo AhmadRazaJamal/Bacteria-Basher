@@ -38,21 +38,6 @@ Geometry.parseOBJ = function(src) {
     return new Geometry(faces)
 }
 
-// Loads an OBJ file from the given URL, and returns it as a promise
-Geometry.loadOBJ = function(url) {
-    return new Promise(function(resolve) {
-        var xhr = new XMLHttpRequest()
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == XMLHttpRequest.DONE) {
-                resolve(Geometry.parseOBJ(xhr.responseText))
-            }
-        }
-        xhr.open('GET', url, true)
-        xhr.send(null)
-    })
-}
-
-
 function Face(vertices) {
     this.vertices = vertices || []
 }
